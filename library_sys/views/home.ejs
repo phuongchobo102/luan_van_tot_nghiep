@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Borrow/Return System</title>
+    
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <!-- Google Fonts (Optional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="brand">Library System</a>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/home/books">Books</a></li>
+                <li><a href="/home/account">Account</a></li>
+                <li><a href="/login">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to the Library</h1>
+            <p>Borrow and return books easily with our system</p>
+            <form class="search-form" action="/home/search" method="POST">
+                <input type="text" name="query" placeholder="Search for books by title, author...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Book List Section -->
+    <section class="book-list">
+        <div class="container">
+            <h2>Popular Books</h2>
+            <div class="book-grid">
+                <% books.forEach(book => { %>
+                    <div class="book-card">
+                        <img src="<%= book.image %>" alt="<%= book.title %>" class="book-cover">
+                        <h3><%= book.book %></h3>
+                        <p>by <%= book.author %></p>
+                        
+                        <!-- Form POST để mượn sách -->
+                        <form action="/home" method="POST">
+                        <input type="hidden" name="book_id" value="<%= book.item_id %>">
+                        <input type="hidden" name="book_name" value="<%= book.book %>">
+                        <button type="submit" class="btn" onclick="confirmBorrow()" >Borrow</button>
+                    </form>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Library Borrow/Return System</p>
+        </div>
+    </footer>
+
+</body>
+<script>
+    // Hàm sẽ chạy khi người dùng nhấn nút
+    function confirmBorrow() {
+        alert("Congratulation, you have been borrow book sucess!!!");
+        // Bạn có thể thêm các thao tác khác tại đây
+    }
+</script>
+</html>

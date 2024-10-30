@@ -1,0 +1,246 @@
+/* Basic Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.navbar {
+    background-color: #004a99; /* Màu xanh đậm */
+    height: 130px; /* Điều chỉnh chiều cao của navbar */
+    padding: 0 20px; /* Khoảng cách giữa các nội dung bên trong navbar */
+    display: flex;
+    align-items: center; /* Canh giữa theo chiều dọc */
+    justify-content: space-between; /* Khoảng cách giữa brand và menu */
+}
+
+.navbar .brand {
+    font-size: 38px; /* Tăng kích thước chữ của tiêu đề */
+    font-weight: bold;
+    color: white;
+}
+
+.nav-menu {
+    font-size: 28px; /* Tăng kích thước chữ của tiêu đề */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-menu li {
+    margin-right: 20px; /* Khoảng cách giữa các mục menu */
+}
+
+.nav-menu li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px; /* Tăng kích thước chữ của menu */
+    font-weight: bold;
+    padding: 10px 15px; /* Tạo khoảng đệm xung quanh các liên kết */
+}
+
+.nav-menu li a:hover {
+    background-color: #003366; /* Màu nền khi di chuột qua */
+    border-radius: 5px; /* Góc bo tròn */
+}
+/* Hero Section */
+.hero {
+    background-image: url('/images/home.jpg'); /* Đường dẫn đến hình ảnh */
+    background-size: cover; /* Đảm bảo hình ảnh phủ kín toàn bộ phần */
+    background-position: center; /* Canh giữa hình ảnh */
+    padding: 50px 0; /* Padding cho phần trên và dưới */
+    text-align: center; /* Canh giữa nội dung */
+    color: white; /* Màu chữ để nổi bật trên nền tối (nếu cần) */
+    /* color: #fff; */
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Thêm kiểu cho phần search-form */
+.search-form {
+    display: flex; /* Sử dụng Flexbox để căn chỉnh các phần tử trong hàng */
+    margin-top: 20px; /* Khoảng cách giữa đoạn văn và form tìm kiếm */
+}
+
+/* Kiểu cho trường nhập liệu */
+.search-form input[type="text"] {
+    padding: 10px 15px; /* Padding cho trường nhập liệu */
+    border: 2px solid #007bff; /* Đường viền màu xanh */
+    border-radius: 25px 0 0 25px; /* Bo tròn các góc bên trái */
+    font-size: 16px; /* Kích thước font chữ */
+    width: 300px; /* Chiều rộng của trường nhập liệu */
+    transition: border-color 0.3s; /* Hiệu ứng chuyển đổi cho màu viền */
+}
+
+/* Hiệu ứng khi focus vào trường nhập liệu */
+.search-form input[type="text"]:focus {
+    outline: none; /* Ẩn viền mặc định */
+    border-color: #0056b3; /* Đổi màu viền khi focus */
+}
+
+/* Kiểu cho nút tìm kiếm */
+.search-form button {
+    padding: 10px 20px; /* Padding cho nút */
+    background-color: #007bff; /* Màu nền cho nút */
+    color: white; /* Màu chữ cho nút */
+    border: none; /* Ẩn đường viền */
+    border-radius: 0 25px 25px 0; /* Bo tròn các góc bên phải */
+    font-size: 16px; /* Kích thước font chữ */
+    cursor: pointer; /* Thay đổi con trỏ khi di chuột qua nút */
+    transition: background-color 0.3s, transform 0.3s; /* Hiệu ứng chuyển đổi cho màu nền và chuyển động */
+}
+
+/* Hiệu ứng khi di chuột qua nút */
+.search-form button:hover {
+    background-color: #0056b3; /* Đổi màu nền khi hover */
+    transform: scale(1.05); /* Tăng kích thước khi hover */
+}
+
+/* Book List Section */
+.book-list {
+    padding: 50px 0;
+}
+
+.book-list h2 {
+    font-size: 2rem; /* Kích thước lớn hơn */
+    color: #2980b9;  /* Màu xanh hơi đậm */
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+}
+
+.book-grid {
+    padding: 40px; /* Thêm padding cho khoảng cách bên ngoài */
+    display: flex; /* Sử dụng flexbox cho bố cục */
+    flex-wrap: wrap; /* Cho phép các thẻ xuống hàng nếu không đủ chỗ */
+    justify-content: space-between; /* Phân bổ không gian giữa các thẻ sách */
+}
+
+.book-card {
+    width: calc(25% - 20px); /* Giữ chiều rộng cho thẻ sách */
+    margin: 10px; /* Khoảng cách giữa các thẻ sách */
+    padding: 20px; /* Padding cho nội dung bên trong thẻ sách */
+    background-color: #f9f9f9; /* Màu nền nổi bật */
+    border: 1px solid #ddd; /* Đường viền cho thẻ sách */
+    border-radius: 8px; /* Bo tròn các góc của thẻ sách */
+    justify-content: space-between;
+    transition: transform 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển động khi hover */
+}
+
+.book-cover {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.book-card h3 {
+    font-size: 1.8rem;
+    color: #2980b9;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.book-card p {
+    font-size: 1rem;
+    color: #777;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #3498db;  /* Màu xanh dương nhẹ */
+    border: none;
+    border-radius: 30px;  /* Bo tròn các góc */
+    text-align: center;
+    text-transform: uppercase;  /* Chữ in hoa */
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;  /* Hiệu ứng chuyển đổi màu và phóng to */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);  /* Đổ bóng cho nút */
+}
+
+.btn:hover {
+    background-color: #2980b9;  /* Màu xanh đậm hơn khi hover */
+    transform: scale(1.05);  /* Phóng to nhẹ khi hover */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);  /* Tăng độ mạnh của bóng khi hover */
+}
+
+.btn:active {
+    background-color: #1c5980;  /* Màu xanh đậm khi nhấn */
+    transform: scale(0.98);  /* Thu nhỏ nhẹ khi nhấn */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);  /* Giảm độ mạnh của bóng khi nhấn */
+}
+
+.return-button {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #3498db;  /* Màu xanh dương nhẹ */
+    border: none;
+    border-radius: 30px;  /* Bo tròn các góc */
+    text-align: center;
+    text-transform: uppercase;  /* Chữ in hoa */
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;  /* Hiệu ứng chuyển đổi màu và phóng to */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);  /* Đổ bóng cho nút */
+    align-self: center;
+}
+
+.return-button:hover {
+    background-color: #2980b9;  /* Màu xanh đậm hơn khi hover */
+    transform: scale(1.05);  /* Phóng to nhẹ khi hover */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);  /* Tăng độ mạnh của bóng khi hover */
+}
+
+.return-button:active {
+    background-color: #1c5980;  /* Màu xanh đậm khi nhấn */
+    transform: scale(0.98);  /* Thu nhỏ nhẹ khi nhấn */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);  /* Giảm độ mạnh của bóng khi nhấn */
+}
+
+
+/* Hiệu ứng khi hover */
+.book-card:hover {
+    transform: translateY(-5px); /* Nâng thẻ sách lên một chút khi hover */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Thêm bóng để tạo cảm giác nổi bật hơn */
+    background-color: #e0f7fa; /* Thay đổi màu nền khi hover */
+}
+
+/* Footer */
+footer {
+    background-color: #004d99;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
