@@ -29,7 +29,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Welcome <%= username %>!</h1>
+            <h1>Welcome back <%= username %>!</h1>
             <p>Borrow and return books easily with our system</p>
         </div>
     </section>
@@ -50,7 +50,7 @@
                             <p><strong>Borrowed Date:</strong> <%= book.create_on_date %></p>
                             <form action="/home/account" method="POST">
                                 <input type="hidden" name="item_id" value="<%= book.item_id %>">
-                                <button type="submit" class="return-button" onclick="confirmBorrow()" >Return</button>
+                                <button type="submit" class="return-button" onclick="confirmBorrow()" >Trả sách</button>
                             </form>
                         </div>
             <% }); %>
@@ -60,17 +60,13 @@
 
 
     <!-- Footer Section -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Library Borrow/Return System</p>
-        </div>
-    </footer>
+    <%- include('particals/footer') %>
 
 </body>
 <script>
     // Hàm sẽ chạy khi người dùng nhấn nút
     function confirmBorrow() {
-        alert("Congratulation, you have been borrow book sucess!!!");
+        alert("Congratulation, you have been return book sucess!!!");
         // Bạn có thể thêm các thao tác khác tại đây
     }
 </script>

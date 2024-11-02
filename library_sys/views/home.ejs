@@ -7,24 +7,14 @@
     
     <!-- Link to external CSS -->
     <link rel="stylesheet" href="/css/styles.css">
-
+    <link rel="stylesheet" href="/css/header.css">
     <!-- Google Fonts (Optional) -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar">
-        <div class="container">
-            <a href="/" class="brand">Library System</a>
-            <ul class="nav-menu">
-                <li><a href="/">Home</a></li>
-                <li><a href="/home/books">Books</a></li>
-                <li><a href="/home/account">Account</a></li>
-                <li><a href="/login">Login</a></li>
-            </ul>
-        </div>
-    </nav>
+    <%- include('particals/header') %>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -37,6 +27,11 @@
             </form>
         </div>
     </section>
+
+    <!-- <div class="sidebar"> -->
+        <!-- Sidebar -->
+        <%- include('particals/topic_list') %>
+    <!-- </div> -->
 
     <!-- Book List Section -->
     <section class="book-list">
@@ -53,7 +48,7 @@
                         <form action="/home" method="POST">
                         <input type="hidden" name="book_id" value="<%= book.item_id %>">
                         <input type="hidden" name="book_name" value="<%= book.book %>">
-                        <button type="submit" class="btn" onclick="confirmBorrow()" >Borrow</button>
+                        <button type="submit" class="btn" onclick="confirmBorrow()" >Mượn</button>
                     </form>
                     </div>
                 <% }); %>
@@ -62,18 +57,21 @@
     </section>
 
     <!-- Footer Section -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Library Borrow/Return System</p>
-        </div>
-    </footer>
-
+    <%- include('particals/footer') %>
 </body>
 <script>
     // Hàm sẽ chạy khi người dùng nhấn nút
     function confirmBorrow() {
-        alert("Congratulation, you have been borrow book sucess!!!");
-        // Bạn có thể thêm các thao tác khác tại đây
+        const userName = "<%= user_name ? user_name : '' %>";
+        
+        if (userName) {
+            alert(`Congratulation !!! ${userName} has been borrow this book sucess.`);
+            // Thực hiện hành động khi user_name tồn tại
+        } else {
+            alert("Please login your account before borrow book !!!");
+            // Xử lý khi user_name không tồn tại
+        }
+
     }
 </script>
 </html>

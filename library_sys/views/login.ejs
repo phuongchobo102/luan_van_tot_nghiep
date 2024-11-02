@@ -4,115 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
-    <style>
-        body {
-            background-image: url('/images/login.jpg');  /* Đường dẫn tới hình ảnh */
-            background-size: cover;    /* Hình nền bao phủ toàn bộ màn hình */
-            background-position: center; /* Đặt hình ảnh ở giữa */
-            background-repeat: no-repeat; /* Không lặp lại hình nền */
-            height: 100vh;              /* Chiều cao toàn bộ màn hình */
-            margin: 0;                  /* Xóa khoảng trắng mặc định của body */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        h1 {
-            font-family: 'Arial', sans-serif; /* Font chữ */
-            font-size: 2.5em; /* Kích thước chữ */
-            text-align: center; /* Căn giữa chữ */
-            color: #4A90E2; /* Màu chữ */
-            margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
-            text-transform: uppercase; /* Chữ in hoa */
-            letter-spacing: 1px; /* Khoảng cách giữa các chữ cái */
-            border-bottom: 2px solid #4A90E2; /* Đường viền dưới */
-            padding-bottom: 10px; /* Đệm dưới cùng */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng cho tiêu đề */
-        }
-
-        .login-container {
-            background-color: #ffffff; /* Màu nền trắng */
-            border: 1px solid #e0e0e0; /* Đường viền nhẹ xung quanh */
-            border-radius: 8px; /* Bo tròn các góc */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho login-container */
-            padding: 20px; /* Khoảng cách bên trong login-container */
-            margin: 15px; /* Khoảng cách bên ngoài login-container */
-            /* text-align: center; */
-            transition: transform 0.3s; /* Hiệu ứng chuyển động khi hover */
-            width: 35%;
-        }
-        label {
-            display: block; /* Đảm bảo mỗi label trên một dòng */
-            margin: 10px 0 5px; /* Tạo khoảng cách cho label */
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%; /* Chiều rộng đầy đủ */
-            padding: 10px; /* Đệm cho input */
-            border: 1px solid #ccc; /* Đường viền */
-            border-radius: 5px; /* Bo tròn các góc */
-            box-sizing: border-box; /* Tính toán chiều rộng và chiều cao */
-        }
-
-        button {
-            width: 100%; /* Chiều rộng đầy đủ */
-            padding: 10px; /* Đệm cho nút */
-            background-color: #28a745; /* Màu nền nút */
-            color: #fff; /* Màu chữ nút */
-            border: none; /* Không có đường viền */
-            border-radius: 5px; /* Bo tròn các góc */
-            cursor: pointer; /* Con trỏ khi di chuột qua */
-            font-size: 16px; /* Kích thước chữ */
-            margin-top: 10px; /* Khoảng cách phía trên nút */
-        }
-
-        button:hover {
-            background-color: #218838; /* Màu khi di chuột qua */
-        }
-
-        
-
-        /* Hiệu ứng khi hover */
-        .login-container:hover {
-            transform: translateY(-5px); /* Nâng login-container lên khi hover */
-        }
-
-        /* Tạo kiểu cho tiêu đề */
-        .login-container h2 {
-            font-size: 1.5em; /* Kích thước chữ tiêu đề */
-            color: #333; /* Màu chữ tiêu đề */
-            margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
-        }
-
-        /* Tạo kiểu cho đoạn văn bản */
-        .login-container p {
-            font-size: 1em; /* Kích thước chữ đoạn văn */
-            color: #666; /* Màu chữ cho đoạn văn */
-            line-height: 1.5; /* Chiều cao dòng cho dễ đọc */
-        }
-
-        /* Tạo kiểu cho nút */
-        .login-container button {
-            background-color: #4A90E2; /* Màu nền nút */
-            color: #ffffff; /* Màu chữ nút */
-            border: none; /* Không có đường viền */
-            border-radius: 5px; /* Bo tròn các góc */
-            padding: 10px 15px; /* Đệm cho nút */
-            cursor: pointer; /* Con trỏ khi di chuột qua nút */
-            font-size: 1em; /* Kích thước chữ nút */
-            transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
-        }
-
-        /* Hiệu ứng khi hover nút */
-        .login-container button:hover {
-            background-color: #357ABD; /* Màu khi di chuột qua nút */
-        }
-    </style>
+    <!-- Link to external CSS -->
+    <!-- Link to multiple external CSS files -->
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
+    <!-- Trong một file EJS -->
+    <%- include('particals/header') %>
     <div class = "login-container" >
         <h1>LOGIN Library system manager</h1><br><br><br><br><br><br><br><br>
+        <!-- Hiển thị thông báo từ server ngay trên trường Username -->
+        <p style="color: red; font-weight: bold;"><%= loginMessage %></p><br>
         <form action="/login" method="POST">
             <label for="username">Username:</label>
             <input type="text" id="username" name="user" required><br><br>
@@ -121,6 +24,9 @@
             <input type="password" id="password" name="password" required><br><br>
             
             <button type="submit">Login</button>
+            <a href="/register">
+                <button type="button" class="btn-create-account">Resgister new account</button>
+            </a>
         </form>
     </div>
 </body>

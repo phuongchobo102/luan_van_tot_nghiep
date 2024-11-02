@@ -35,8 +35,9 @@ function getHomePage(req,res){
         }
         // store row
         // Lọc các row có giá trị user = 'test'
+        const user_name = req.session.username
         const books = row.filter(row => row.issue == 0);
-        res.render('home', {books});
+        res.render('home', {user_name,books});
     })
     
     // res.redirect("/login");

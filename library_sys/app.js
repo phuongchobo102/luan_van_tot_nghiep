@@ -39,7 +39,7 @@ app.set('view engine', 'ejs');
 
 // check that user is login before go every route ?
 app.get('*',login.checkLogin);
-
+app.post('*',login.checkLogin);
 // add route to login page
 app.use('/', login.login_router);
 // add route to home page;
@@ -48,6 +48,6 @@ app.use('/', home)
 app.use('/', account)
 
 
-app.listen(7000, (req, res) => {
+app.listen(7000,'0.0.0.0', (req, res) => {
     console.log("App is running on port 7000")
 })
