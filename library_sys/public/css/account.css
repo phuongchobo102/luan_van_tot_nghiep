@@ -136,7 +136,7 @@ body {
     padding: 40px; /* Thêm padding cho khoảng cách bên ngoài */
     display: flex; /* Sử dụng flexbox cho bố cục */
     flex-wrap: wrap; /* Cho phép các thẻ xuống hàng nếu không đủ chỗ */
-    justify-content: space-between; /* Phân bổ không gian giữa các thẻ sách */
+
 }
 
 .book-card {
@@ -147,6 +147,7 @@ body {
     border: 1px solid #ddd; /* Đường viền cho thẻ sách */
     border-radius: 8px; /* Bo tròn các góc của thẻ sách */
     justify-content: space-between;
+    flex-direction: column; /* Sắp xếp nội dung theo cột */
     transition: transform 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển động khi hover */
 }
 

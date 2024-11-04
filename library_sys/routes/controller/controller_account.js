@@ -28,23 +28,53 @@ function getAccountPage(req,res) {
     })
 }
 
+function calculateDaysSince(dateString) {
+    // Chuyển đổi chuỗi ngày từ định dạng YYYY-MM-DD sang đối tượng Date
+    const startDate = new Date(dateString + 'T00:00:00'); // Đảm bảo giờ là 00:00:00
+    const currentDate = new Date(); // Ngày hiện tại
+
+    // Đặt giờ của currentDate về 00:00:00 để chỉ so sánh ngày
+    currentDate.setHours(0, 0, 0, 0);
+
+    // Tính số ngày giữa hai ngày
+    const timeDifference = currentDate - startDate; // Đơn vị là milliseconds
+    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24)); // Chuyển đổi milliseconds sang days
+
+    return daysDifference; // Trả về số ngày
+}
+
 function returnBook(req,res) {
-    const { item_id } = req.body;
+    const { item_id , date_borrow } = req.body;
 
     // Lệnh SQL để update giá trị cột user cho id = 2
-    const sql = "UPDATE Book SET borrow_user = ?, issue = ? WHERE item_id = ?";
-    const data = ['NULL', 0 , item_id]; // Dữ liệu truyền vào query
+    var sql = "UPDATE Book SET borrow_user = ?, issue = ? WHERE item_id = ?";
+    var data = ['NULL', 0 , item_id]; // Dữ liệu truyền vào query
 
-    // Xử lý việc mượn sách ở đây
-
+    // return book to table
     mysql.query(sql,data,(err,row)=>{
         if(err){
             console.log('Error in query data')
             throw err
         }
-        console.log('Done borrow book for '+ req.session.username);
-        res.redirect("/home/account");
-    })
+        
+        // console.log('Done borrow book for '+ req.session.username);
+        if(calculateDaysSince(date_borrow) >= 7){
+            var sql = "UPDATE authen_user SET ban = ?, date_ban = ? WHERE user_name = ?";
+            var data = [2, date_borrow , req.session.username]; // Dữ liệu truyền vào query
+            console.log("user return book late !!! set ban")
+            mysql.query(sql,data,(err,row)=>{
+                if(err){
+                    console.log('Error in query data')
+                    throw err;
+                }
+
+                res.redirect("/home/account");
+            });
+        }else{
+            console.log("user return book ontime")
+            res.redirect("/home/account");
+        }
+    });
 }
 
 

@@ -8,8 +8,6 @@ home_router.get('/', home.redirectHomePage);
 
 home_router.get('/home', home.getHomePage);
 
-home_router.get('/home/books', home.getHomePage);
-
 home_router.post("/home", home.borrow);
 
 home_router.post("/home/search", home.search);

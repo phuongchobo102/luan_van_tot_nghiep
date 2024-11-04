@@ -14,17 +14,7 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar">
-        <div class="container">
-            <a href="/" class="brand">Library System</a>
-            <ul class="nav-menu">
-                <li><a href="/">Home</a></li>
-                <li><a href="/home/books">Books</a></li>
-                <li><a href="/home/account">Account</a></li>
-                <li><a href="/login">Login</a></li>
-            </ul>
-        </div>
-    </nav>
+    <%- include('particals/header') %>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -46,10 +36,11 @@
                         <div class="book-card">
                             <img src="<%= book.image %>" alt="<%= book.title %>" class="book-cover">
                             <h3><%= book.book %></h3>
-                            <p>by <%= book.author %></p>
-                            <p><strong>Borrowed Date:</strong> <%= book.create_on_date %></p>
+                            <p>By <strong><%= book.author %></strong></p>
+                            <p><strong>Borrowed Date:</strong> <%= new Date(book.date_borrow).toISOString().split('T')[0] %></p>
                             <form action="/home/account" method="POST">
                                 <input type="hidden" name="item_id" value="<%= book.item_id %>">
+                                <input type="hidden" name="date_borrow" value="<%= new Date(book.date_borrow).toISOString().split('T')[0] %>">
                                 <button type="submit" class="return-button" onclick="confirmBorrow()" >Trả sách</button>
                             </form>
                         </div>

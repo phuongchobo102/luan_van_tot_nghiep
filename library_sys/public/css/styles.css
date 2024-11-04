@@ -23,6 +23,7 @@ body {
     /* color: #fff; */
     height: 400px;
     display: flex;
+    margin-left: 250px; 
     align-items: center;
     justify-content: center;
     flex-direction: column;
@@ -83,6 +84,7 @@ body {
 /* Book List Section */
 .book-list {
     padding: 50px 0;
+    margin-left: 270px
 }
 
 .book-list h2 {
@@ -98,7 +100,7 @@ body {
     padding: 40px; /* Thêm padding cho khoảng cách bên ngoài */
     display: flex; /* Sử dụng flexbox cho bố cục */
     flex-wrap: wrap; /* Cho phép các thẻ xuống hàng nếu không đủ chỗ */
-    justify-content: space-between; /* Phân bổ không gian giữa các thẻ sách */
+
 }
 
 .book-card {
@@ -109,6 +111,7 @@ body {
     border: 1px solid #ddd; /* Đường viền cho thẻ sách */
     border-radius: 8px; /* Bo tròn các góc của thẻ sách */
     justify-content: space-between;
+    flex-direction: column; /* Sắp xếp nội dung theo cột */
     transition: transform 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển động khi hover */
 }
 
@@ -124,12 +127,17 @@ body {
     font-weight: bold;
 }
 
+.book-card form {
+    margin-top: auto; /* Đẩy form xuống đáy thẻ */
+}
+
+
 .book-card p {
     font-size: 1rem;
     color: #777;
 }
 
-.btn {
+.book-card .btn  {
     display: inline-block;
     padding: 12px 25px;
     font-size: 16px;
@@ -146,13 +154,13 @@ body {
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);  /* Đổ bóng cho nút */
 }
 
-.btn:hover {
+.book-card .btn :hover {
     background-color: #2980b9;  /* Màu xanh đậm hơn khi hover */
     transform: scale(1.05);  /* Phóng to nhẹ khi hover */
     box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);  /* Tăng độ mạnh của bóng khi hover */
 }
 
-.btn:active {
+.book-card .btn :active {
     background-color: #1c5980;  /* Màu xanh đậm khi nhấn */
     transform: scale(0.98);  /* Thu nhỏ nhẹ khi nhấn */
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);  /* Giảm độ mạnh của bóng khi nhấn */

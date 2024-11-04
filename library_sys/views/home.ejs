@@ -8,6 +8,7 @@
     <!-- Link to external CSS -->
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
     <!-- Google Fonts (Optional) -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -23,43 +24,49 @@
             <p>Borrow and return books easily with our system</p>
             <form class="search-form" action="/home/search" method="POST">
                 <input type="text" name="query" placeholder="Search for books by title, author...">
+                <button type="button" id="start-record-btn">🎤</button> <!-- Nút micro -->
                 <button type="submit">Search</button>
             </form>
         </div>
     </section>
 
-    <!-- <div class="sidebar"> -->
-        <!-- Sidebar -->
-        <%- include('particals/topic_list') %>
-    <!-- </div> -->
+    <%- include('particals/topic_list') %>
 
     <!-- Book List Section -->
-    <section class="book-list">
-        <div class="container">
-            <h2>Popular Books</h2>
-            <div class="book-grid">
-                <% books.forEach(book => { %>
-                    <div class="book-card">
-                        <img src="<%= book.image %>" alt="<%= book.title %>" class="book-cover">
-                        <h3><%= book.book %></h3>
-                        <p>by <%= book.author %></p>
-                        
-                        <!-- Form POST để mượn sách -->
-                        <form action="/home" method="POST">
-                        <input type="hidden" name="book_id" value="<%= book.item_id %>">
-                        <input type="hidden" name="book_name" value="<%= book.book %>">
-                        <button type="submit" class="btn" onclick="confirmBorrow()" >Mượn</button>
-                    </form>
-                    </div>
-                <% }); %>
-            </div>
-        </div>
-    </section>
+    <%- include('particals/book_list') %>
 
     <!-- Footer Section -->
     <%- include('particals/footer') %>
 </body>
 <script>
+    // Kiểm tra xem trình duyệt có hỗ trợ Web Speech API không
+    if ('webkitSpeechRecognition' in window) {
+        const recognition = new webkitSpeechRecognition();
+        const searchInput = document.getElementById('search-input');
+        const startRecordBtn = document.getElementById('start-record-btn');
+
+        // Thiết lập ngôn ngữ cho nhận diện giọng nói
+        recognition.lang = 'vi-VN'; // Thay đổi ngôn ngữ nếu cần
+        recognition.interimResults = false; // Không trả về kết quả tạm thời
+
+        // Bắt đầu nhận diện giọng nói
+        startRecordBtn.onclick = function() {
+            recognition.start();
+        };
+
+        // Xử lý khi nhận diện thành công
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript; // Lấy chuỗi đã nhận diện
+            searchInput.value = transcript; // Đặt giá trị vào ô tìm kiếm
+        };
+
+        // Xử lý khi có lỗi xảy ra
+        recognition.onerror = function(event) {
+            console.error('Error occurred in recognition: ' + event.error);
+        };
+    } else {
+        console.log('Web Speech API is not supported in this browser.');
+    }
     // Hàm sẽ chạy khi người dùng nhấn nút
     function confirmBorrow() {
         const userName = "<%= user_name ? user_name : '' %>";

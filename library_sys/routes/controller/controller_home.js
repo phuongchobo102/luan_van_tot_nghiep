@@ -1,31 +1,7 @@
 const mysql = require('../../data_base/data_base')
-// Sample data (fake data for demonstration)
-// const books = [
-//     { id: 1, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', image: '/images/gatsby.jpg' },
-//     { id: 2, title: '1984', author: 'George Orwell', image: '/images/1984.jpg' },
-//     { id: 3, title: 'To Kill a Mockingbird', author: 'Harper Lee', image: '/images/mockingbird.jpg' },
-//   ];
+const date = new Date();
 
-function getCurrentDate() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
 
-// var books ;
-// mysql.query('select * from Book',(err,row)=>{
-//     if(err){
-//       console.log('Error in query data')
-//       throw err
-//     }
-//     // store row
-//     books = row ;
-//     console.log(books);
-// })
-
-  
 function getHomePage(req,res){
     console.log('render home page now ~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     mysql.query('select * from Book' ,(err,row)=>{
@@ -37,22 +13,38 @@ function getHomePage(req,res){
         // Lọc các row có giá trị user = 'test'
         const user_name = req.session.username
         const books = row.filter(row => row.issue == 0);
-        res.render('home', {user_name,books});
+        const ban = req.session.ban;
+        const time_unlock = req.session.date_ban;
+        console.log( req.session.date_ban);
+        res.render('home', {user_name,books,ban,time_unlock});
     })
     
     // res.redirect("/login");
 }
 
+function formatNumber(number) {
+    return number.toString().padStart(2, '0');
+}
+
+function get_date(){
+    // Lấy ngày
+    const day = date.getDate();
+    // formatNumber(day)
+    // Lấy tháng
+    const month = date.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0, nên cần cộng thêm 1
+    // Lấy năm
+    const year = date.getFullYear();
+    return `${year}-${formatNumber(month)}-${formatNumber(day)}`;
+}
+
 function borrow(req,res){
-    // res.render("login", {var1 : "phuong"});
     const { book_id, book_name } = req.body;
     // Lệnh SQL để update giá trị cột user cho id = 2
-    const sql = "UPDATE Book SET borrow_user = ?, issue = ? WHERE item_id = ?";
-    const data = [req.session.username,1 , book_id]; // Dữ liệu truyền vào query
+    const sql = "UPDATE Book SET borrow_user = ?, issue = ?, date_borrow = ?, times_borrow = times_borrow + 1  WHERE item_id = ?";
+    const data = [req.session.username,1 ,get_date(), book_id]; // Dữ liệu truyền vào query
 
-   
     // Xử lý việc mượn sách ở đây
-    console.log(`Borrowing book: ${book_name} with ID: ${book_id}`);
+    console.log(`Borrowing book: ${book_name} with ID: ${book_id} date = ${get_date()}`);
 
     mysql.query(sql,data,(err,row)=>{
         if(err){
@@ -79,8 +71,11 @@ function search(req,res){
         }
         // store row
         // Lọc các row có giá trị user = 'test'
+        const user_name = req.session.username
         const books  = row.filter(user => user.book.includes(searchQuery) || user.author.includes(searchQuery));
-        res.render('home', {books } );
+        const ban = req.session.ban;
+        const time_unlock = req.session.date_ban;
+        res.render('book', {user_name,books,ban,time_unlock});
     })
     // Xử lý hoặc sử dụng searchQuery để tìm kiếm sách
     console.log("Search query:", searchQuery);

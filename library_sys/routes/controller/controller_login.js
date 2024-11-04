@@ -1,7 +1,7 @@
 const mysql = require('../../data_base/data_base')
 
-const user = "admin";
-const password = "admin";
+const NOT_BAN = 1;
+const BAN = 2;
 
 function getLoginPage(req,res){
     // res.render("login", {var1 : "phuong"});
@@ -14,59 +14,147 @@ mysql.query('select * from authen_user',(err,row)=>{
       console.log('Error in query data')
       throw err
     }
-    console.log("Data receive from data base is :\n")
-    // console.log(row[0])
-    row.forEach((user,index)=>{
-        console.log(user)
-    })
     // store row
     rows = row ;
     // console.log(rows)
 })
 
+
+
+function calculateDaysSince(dateString) {
+    // Chuyển đổi chuỗi ngày từ định dạng YYYY-MM-DD sang đối tượng Date
+    const startDate = new Date(dateString + 'T00:00:00'); // Đảm bảo giờ là 00:00:00
+    const currentDate = new Date(); // Ngày hiện tại
+
+    // Đặt giờ của currentDate về 00:00:00 để chỉ so sánh ngày
+    currentDate.setHours(0, 0, 0, 0);
+
+    // Tính số ngày giữa hai ngày
+    const timeDifference = currentDate - startDate; // Đơn vị là milliseconds
+    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24)); // Chuyển đổi milliseconds sang days
+
+    return daysDifference; // Trả về số ngày
+}
+
+function formatDate(dateString) {
+    // Chuyển đổi chuỗi ngày thành đối tượng Date
+    const date = new Date(dateString);
+
+    // Lấy năm, tháng và ngày rồi ghép lại thành chuỗi 'YYYY-MM-DD'
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const day = String(date.getUTCDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
 function authenUser(req,res){
     // console.log(rows)
     // console.log(`authenUser user= ${req.body.user} password = ${req.body.password}`)
 
     var user_pass = false;
     var idx =0;
-
-    rows.forEach((user,index)=> {
-        // console.log(`authenUser user= ${user.user_name} password = ${user.password}`)
-        if(user.user_name == req.body.user && user.password == req.body.password)
-        {
-            // authen sucess... -> set authen check variable
-            user_pass = true;
-            idx = index;
+    mysql.query('select * from authen_user',(err,row)=>{
+        if(err){
+          console.log('Error in query data')
+          throw err
         }
-    });
-    // user_pass = true;
-    if(user_pass == true){
-        req.session.loggedin = true;
-        req.session.username = rows[idx].user_name;
-        console.log(`authenUser checking pass account ${rows[idx]}`);
-        return res.redirect("/home");
-    }
-    else{
-        // false case 
-        console.log("Invalid user name or password !!!")
-        console.log(`authenUser user= ${user.user_name} password = ${user.password}`)
-        res.render("login", {loginMessage : "Wrong account, please retry again !"});
-    }
-    // if(req.body.user == user && req.body.password == password){
-    //     // save user name to user session
-    //     // Authenticate the user
-    //     req.session.loggedin = true;
-    //     req.session.username = user;
-    //     // pass authen
-    //     console.log(`authenUser user.session.user = ${req.session.username}`)
-    //     return res.redirect("/home");
-    // }
-    // else{
-    //     // false authen case
-    //     console.log("Invalid user name or password !!!")
-    //     return res.status(401).send('Invalid credentials');
-    // }
+        // store row
+        rows = row ;
+        // console.log(rows)
+        rows.forEach((user,index)=> {
+            // console.log(`authenUser user= ${user.user_name} password = ${user.password}`)
+            if(user.user_name == req.body.user && user.password == req.body.password)
+            {
+                // authen sucess... -> set authen check variable
+                user_pass = true;
+                idx = index;
+            }
+        });
+        // user_pass = true;
+        if(user_pass == true){
+            req.session.loggedin = true;
+            req.session.username = rows[idx].user_name;
+            req.session.ban = NOT_BAN;
+            var max = 0;
+            // scan Book table to find book borrow by user
+            mysql.query('select * from Book' ,(err,books)=>{
+                if(err){
+                  console.log('Error in query data')
+                  throw err
+                }
+                books.forEach(book => {
+                    // tim sach muon chua tra bi qua han
+                    if((book.borrow_user == req.session.username)){
+                        // user have been borrow book
+                        const date_borrow =  book.date_borrow;
+                        const time_diff = calculateDaysSince(date_borrow);
+                        if(time_diff > max) 
+                            max = time_diff;
+                    }
+                });
+                // done find max day borrow
+                if (max >= 7){
+                    console.log("muon khong tra => ban user")
+                    // muon sach ko tra bi qua han
+                    // direct ban
+                    req.session.ban = BAN;
+                    req.session.date_ban = 30;
+                    return res.redirect("/home");
+                }
+                // check data authen_user table
+                if(rows[idx].ban == BAN){
+                    const date_ban =  rows[idx].date_ban;
+                    console.log(date_ban)
+                    const formattedDate = formatDate(date_ban);
+                    console.log(formattedDate)
+                    const time_diff = calculateDaysSince(formattedDate);
+                    console.log(time_diff);
+                    if(time_diff >= 30){
+                        // unlock ban user
+                        const sql = "UPDATE authen_user SET ban = ? WHERE user_name = ?";
+                        const data = [ 1 , req.session.username]; // Dữ liệu truyền vào query
+                        req.session.ban = NOT_BAN;// unlock session
+                        mysql.query(sql,data,(err,row)=>{
+                            if(err){
+                                console.log('Error in query data')
+                                throw err
+                            }
+                            console.log("unban user")
+                            console.log('Done UPDATE authen_user unlock for '+ req.session.username);
+                            // not ban 
+                            req.session.ban = NOT_BAN;
+                            return res.redirect("/home");
+                        });
+                    }
+                    else{
+                        console.log("ontime ban user")
+                        // ban
+                        // not ban 
+                        req.session.ban = BAN;
+                        req.session.date_ban = 30 - time_diff;
+                        // console.log(time_diff)
+                        // console.log(30 - time_diff)
+                        return res.redirect("/home");
+                    }
+                }
+                else{
+                    console.log("check data user not ban")
+                    // not ban 
+                    req.session.ban = NOT_BAN;
+                    // req.session.date_ban = 30;
+                    return res.redirect("/home");
+                }
+            })
+        }
+        else{
+            // false case 
+            console.log("Invalid user name or password !!!")
+            console.log(`authenUser user= ${req.body.user} password = ${req.body.password}`)
+            res.render("login", {loginMessage : "Wrong account, please retry again !"});
+        }
+    })
+    
+    
 }
 
 function redirect_loginpage(req,res){
