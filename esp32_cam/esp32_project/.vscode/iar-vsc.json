@@ -1,0 +1,16 @@
+{
+  "workspace": {
+    "path": "${workspaceFolder}\\components\\components\\cmock\\CMock\\test\\iar\\iar_v5\\cmock_demo.eww"
+  },
+  "workspaces": {
+    "${workspaceFolder}\\components\\components\\cmock\\CMock\\test\\iar\\iar_v5\\cmock_demo.eww": {
+      "configs": {},
+      "selected": {
+        "path": "${workspaceFolder}\\components\\components\\cmock\\CMock\\test\\iar\\iar_v5\\cmock_demo.ewp"
+      }
+    }
+  },
+  "workbench": {
+    "path": "C:\\Program Files\\IAR Systems\\Embedded Workbench 9.2"
+  }
+}
