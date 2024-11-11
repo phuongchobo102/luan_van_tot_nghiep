@@ -1,0 +1,28 @@
+/* Hero Section */
+.hero {
+    background-image: url('/images/home.jpg'); /* Đường dẫn đến hình ảnh */
+    background-size: cover; /* Đảm bảo hình ảnh phủ kín toàn bộ phần */
+    background-position: center; /* Canh giữa hình ảnh */
+    padding: 50px 0; /* Padding cho phần trên và dưới */
+    text-align: center; /* Canh giữa nội dung */
+    color: white; /* Màu chữ để nổi bật trên nền tối (nếu cần) */
+    /* color: #fff; */
+    height: 400px;
+    display: flex;
+    margin-left: 15%; 
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}

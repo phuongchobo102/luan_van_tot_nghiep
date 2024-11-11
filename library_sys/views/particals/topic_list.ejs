@@ -1,0 +1,74 @@
+<!-- views/partical/sidebar.ejs -->
+<div class="sidebar">
+    <h2>Danh mục sách</h2>
+    <ul>
+        <li><a href="/books">Tất cả sách</a></li>
+        <li><a href="/books/giao-trinh">Sách giáo trình</a></li>
+        <li><a href="/books/tham-khao">Sách tham khảo</a></li>
+        <li><a href="/books/tieu-thuyet">Tiểu thuyết</a></li>
+        <li><a href="/books/truyen">Truyện</a></li>
+        <li><a href="/books/khac">Khác</a></li>
+    </ul>
+</div>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: white; /* Nền trắng cho trang */
+    color: #2c3e50; /* Màu chữ xanh nước biển nhạt */
+}
+
+.sidebar {
+    width: 15%; /* Độ rộng sidebar */
+    height: 100%; /* Chiều cao 100% của phần tử cha */
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung vượt quá chiều cao */
+    float: left; /* Đặt sidebar ở bên trái */
+    padding: 20px; /* Khoảng cách bên trong */
+    background-color: #3498db; /* Nền xanh cho sidebar */
+    color: white; /* Màu chữ trắng */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+    top: 15%;
+    left: 0;
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+}
+
+.sidebar h2 {
+    font-size: 24px; /* Kích thước chữ tiêu đề lớn hơn */
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+}
+
+.sidebar ul {
+    list-style-type: none; /* Bỏ dấu đầu dòng */
+    padding: 0; /* Bỏ khoảng cách mặc định */
+}
+
+.sidebar li {
+    margin: 10px 0; /* Khoảng cách giữa các mục danh sách */
+}
+
+.sidebar a {
+    color: white; /* Màu chữ trắng */
+    text-decoration: none; /* Bỏ gạch chân */
+    display: block; /* Để chiếm toàn bộ không gian */
+    padding: 10px; /* Khoảng cách bên trong cho liên kết */
+    font-size: 18px; /* Kích thước chữ lớn hơn một chút */
+    border-radius: 5px; /* Bo góc cho các liên kết */
+    transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu mượt mà */
+}
+
+.sidebar a:hover {
+    background-color: white; /* Nền trắng khi hover */
+    color: #3498db; /* Màu chữ xanh khi hover */
+}
+
+.sidebar a.active {
+    background-color: #2980b9; /* Nền xanh đậm cho mục đang được chọn */
+    color: white; /* Màu chữ trắng */
+}
+
+.content {
+    margin-left: 270px; /* Đặt nội dung bên phải sidebar */
+    padding: 20px; /* Khoảng cách bên trong cho nội dung */
+}
+
+</style>

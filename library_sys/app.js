@@ -13,9 +13,8 @@ const login = require('./routes/login');
 const home = require('./routes/home');
 const account = require('./routes/account');
 const book = require('./routes/book');
-// import sql for database handle
-const mysql = require('./data_base/data_base')
 const upload = require('./esp32_cam/upload')
+const manage = require('./routes/manage')
 const app = express();
 
 
@@ -40,8 +39,8 @@ app.use(expressSession({
 app.set('view engine', 'ejs');
 
 // check that user is login before go every route ?
-// app.get('*',login.checkLogin);
-// app.post('*',login.checkLogin);
+app.get('*',login.checkLogin);
+app.post('*',login.checkLogin);
 // add route to login page
 app.use('/', login.login_router);
 // add route to home page;
@@ -52,6 +51,9 @@ app.use('/', account)
 app.use('/', book)
 // add route to upload file;
 app.use('/', upload)
+// add route to manage page;
+app.use('/', manage)
+
 
 app.listen(7000, (req, res) => {
     console.log("App is running on port 7000")

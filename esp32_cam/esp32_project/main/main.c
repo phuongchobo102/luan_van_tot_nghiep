@@ -12,12 +12,23 @@
 #include "esp_http_client.h"
 static const char *TAG = "esp32-cam Webserver";
 
+
 #define PART_BOUNDARY "123456789000000000000987654321"
 static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
 static const char* _STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
 
 #define CONFIG_XCLK_FREQ 20000000 
+
+#define SER_POST_URL "http://192.168.1.53:7000/upload"
+
+typedef enum{
+    SEND,
+    NOTSEND
+}take_photo_req_t;
+
+// QueueHandle_t interupt_queue = NULL;
+static take_photo_req_t take_photo_req = NOTSEND;
 
 static esp_err_t init_camera(void)
 {
@@ -144,10 +155,13 @@ httpd_handle_t setup_server(void)
     return stream_httpd;
 }
 void send_image();
+static void init_flash_light(void);
+static void set_flash(uint8_t cmd);
+static void init_io0_button(void);
+static void ISR_gpio_task( void * pvParameters );
 void app_main()
 {
     esp_err_t err;
-
     // Initialize NVS
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
@@ -160,21 +174,27 @@ void app_main()
 
     if (wifi_connect_status)
     {
+        init_flash_light();
+        set_flash(1);
+        // init_io0_button();
         ESP_LOGI(TAG, "ESP32 CAM Web Server init_camera\n");
         err = init_camera();
+        // err = ESP_OK;
         if (err != ESP_OK)
         {
             printf("err: %s\n", esp_err_to_name(err));
             return;
         }
         while(true){
-            vTaskDelay(3000/portTICK_PERIOD_MS);
+            vTaskDelay(10000/portTICK_PERIOD_MS);
             send_image();
-            ESP_LOGI(TAG, "ESP32 CAM Web Server is up and running\n");
         }
+        // xTaskCreate(ISR_gpio_task,"ISR_gpio_task",4096,NULL,10,NULL);//create task freertos   ///
     }
-    else
+    else{
         ESP_LOGI(TAG, "Failed to connected with Wi-Fi, check your network Credentials\n");
+    }
+
 }
 
 void send_image(){
@@ -183,7 +203,7 @@ void send_image(){
 
     // 2. Thiết lập yêu cầu HTTP
     esp_http_client_config_t config = {
-        .url = "http://192.168.0.109:3000/upload",
+        .url = SER_POST_URL,
         .method = HTTP_METHOD_POST,
         .cert_pem = NULL,
     };
@@ -216,4 +236,48 @@ void send_image(){
     esp_http_client_close(client);
     esp_http_client_cleanup(client);
     esp_camera_fb_return(pic); // Giải phóng ảnh khỏi bộ nhớ
+}
+
+
+static void init_flash_light(void)
+{
+  gpio_config_t gpio_2config;
+  gpio_2config.pin_bit_mask=1<<GPIO_NUM_4;
+  gpio_2config.mode=GPIO_MODE_OUTPUT;
+  gpio_2config.intr_type=GPIO_INTR_DISABLE;
+  gpio_2config.pull_down_en=GPIO_PULLDOWN_DISABLE;
+  gpio_2config.pull_up_en=GPIO_PULLDOWN_DISABLE;
+  gpio_config(&gpio_2config);
+  gpio_set_level(GPIO_NUM_4,0);
+}
+
+static void init_io0_button(void)
+{
+    gpio_config_t gpio_cfg;
+    gpio_cfg.pin_bit_mask=1<<GPIO_NUM_0;
+    gpio_cfg.mode=GPIO_MODE_INPUT;
+    gpio_cfg.intr_type=GPIO_INTR_DISABLE;
+    gpio_cfg.pull_down_en=GPIO_PULLDOWN_DISABLE;
+    gpio_cfg.pull_up_en=GPIO_PULLDOWN_DISABLE;
+    gpio_config(&gpio_cfg);
+}
+
+static void set_flash(uint8_t cmd){
+  gpio_set_level(GPIO_NUM_4,cmd);
+}
+
+
+static void ISR_gpio_task( void * pvParameters )
+{
+    static int idx =0,odd =0;
+    uint32_t io_num = 0;
+    for(;;){
+        if(gpio_get_level(GPIO_NUM_0) == 0){
+            printf("button have been pressing !!!\n");
+            vTaskDelay(400/portTICK_PERIOD_MS);
+        }
+        else{
+            vTaskDelay(10/portTICK_PERIOD_MS);
+        }
+    }
 }

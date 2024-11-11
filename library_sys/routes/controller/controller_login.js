@@ -53,6 +53,14 @@ function authenUser(req,res){
 
     var user_pass = false;
     var idx =0;
+    // req.session.destroy((err) => {
+    //     if (err) {
+    //         console.error("Lỗi khi xóa session:", err);
+    //         return res.status(500).send("Có lỗi xảy ra khi xóa session.");
+    //     }
+    //     // Xóa session thành công, chuyển hướng về trang đăng nhập hoặc trang chủ
+    //     // res.redirect('/login');
+    // });
     mysql.query('select * from authen_user',(err,row)=>{
         if(err){
           console.log('Error in query data')
@@ -75,6 +83,11 @@ function authenUser(req,res){
             req.session.loggedin = true;
             req.session.username = rows[idx].user_name;
             req.session.ban = NOT_BAN;
+            if(req.session.username == 'admin'){
+                req.session.admin = 1;
+            }
+            else 
+                req.session.admin = 0;
             var max = 0;
             // scan Book table to find book borrow by user
             mysql.query('select * from Book' ,(err,books)=>{
@@ -82,16 +95,21 @@ function authenUser(req,res){
                   console.log('Error in query data')
                   throw err
                 }
-                books.forEach(book => {
+                books.forEach((book,index) => {
                     // tim sach muon chua tra bi qua han
                     if((book.borrow_user == req.session.username)){
                         // user have been borrow book
                         const date_borrow =  book.date_borrow;
-                        const time_diff = calculateDaysSince(date_borrow);
-                        if(time_diff > max) 
+                        const formattedDate = formatDate(date_borrow);
+                        const time_diff = calculateDaysSince(formattedDate);
+                        console.log(time_diff)
+                        if(time_diff > max) {
                             max = time_diff;
+                            // console.log(max)
+                        }
                     }
                 });
+                console.log(max)
                 // done find max day borrow
                 if (max >= 7){
                     console.log("muon khong tra => ban user")

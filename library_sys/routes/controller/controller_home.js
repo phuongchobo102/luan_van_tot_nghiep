@@ -15,8 +15,9 @@ function getHomePage(req,res){
         const books = row.filter(row => row.issue == 0);
         const ban = req.session.ban;
         const time_unlock = req.session.date_ban;
-        console.log( req.session.date_ban);
-        res.render('home', {user_name,books,ban,time_unlock});
+        const  admin = req.session.admin;
+        // console.log( req.session.date_ban);
+        res.render('home', {user_name,books,ban,time_unlock, admin });
     })
     
     // res.redirect("/login");
@@ -61,6 +62,11 @@ function redirectHomePage(req,res){
     res.redirect("/home");
 }
 
+function removeAccents(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+
 function search(req,res){
     // Lấy dữ liệu từ ô tìm kiếm
     const searchQuery = req.body.query;
@@ -72,7 +78,10 @@ function search(req,res){
         // store row
         // Lọc các row có giá trị user = 'test'
         const user_name = req.session.username
-        const books  = row.filter(user => user.book.includes(searchQuery) || user.author.includes(searchQuery));
+        const books = row.filter(user => 
+            removeAccents(user.book).toLowerCase().includes(removeAccents(searchQuery).toLowerCase()) ||
+            removeAccents(user.author).toLowerCase().includes(removeAccents(searchQuery).toLowerCase())
+        );
         const ban = req.session.ban;
         const time_unlock = req.session.date_ban;
         res.render('book', {user_name,books,ban,time_unlock});

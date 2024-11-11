@@ -1,93 +1,32 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const books = [{
-        bookName: "Rudest Book Ever",
-        bookAuthor: "Shwetabh Gangwar",
-        bookPages: 200,
-        bookPrice: 240,
-        bookState: "Available"
-    },
-    {
-        bookName: "Do Epic Shit",
-        bookAuthor: "Ankur Wariko",
-        bookPages: 200,
-        bookPrice: 240,
-        bookState: "Available"
-    }
-]
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const app = express();
 
-const app = express()
+var  index =0;
+// C?u h�nh multer d? luu tr? ?nh trong thu m?c "uploads"
+const storage = multer.diskStorage({
+  destination: './uploads',
+  filename: function (req, file, cb) {
 
-app.set('view engine', 'ejs')
+    cb(null, index.toString() + Date.now() + path.extname(file.originalname)); // �?t t�n file ?nh
+    index++;
+}
+});
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
+const upload = multer({ storage: storage });
 
-app.get("/home", function (req, res) {
-    res.render("home", {
-        data: books
-    })
-})
+// Endpoint d? nh?n ?nh
+app.post('/upload', upload.single('image'), (req, res) => {
+  try {
+    console.log('File received:', req.file);
+    res.json({ message: 'File uploaded successfully', file: req.file });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error uploading file');
+  }
+});
 
-app.post("/home/", (req, res) => {
-    const inputBookName = req.body.bookName
-    const inputBookAuthor = req.body.bookAuthor
-    const inputBookPages = req.body.bookPages
-    const inputBookPrice = req.body.bookPrice
-
-    books.push({
-        bookName: inputBookName,
-        bookAuthor: inputBookAuthor,
-        bookPages: inputBookPages,
-        bookPrice: inputBookPrice,
-        bookState: "Available"
-    })
-
-    res.render("home", {
-        data: books
-    })
-})
-
-app.post('/home/issue', (req, res) => {
-    var requestedBookName = req.body.bookName;
-    books.forEach(book => {
-        if (book.bookName == requestedBookName) {
-            book.bookState = "Issued";
-        }
-    })
-    res.render("home", {
-        data: books
-    })
-})
-
-app.post('/home/return', (req, res) => {
-    var requestedBookName = req.body.bookName;
-    books.forEach(book => {
-        if (book.bookName == requestedBookName) {
-            book.bookState = "Available";
-        }
-    })
-    res.render("home", {
-        data: books
-    })
-})
-
-app.post('/home/delete', (req, res) => {
-    var requestedBookName = req.body.bookName;
-    var j = 0;
-    books.forEach(book => {
-        j = j + 1;
-        if (book.bookName == requestedBookName) {
-            books.splice((j - 1), 1)
-        }
-    })
-    res.render("home", {
-        data: books
-    })
-})
-
-app.listen(7000, (req, res) => {
-    console.log("App is running on port 7000")
-})
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});

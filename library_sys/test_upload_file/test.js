@@ -1,4 +1,37 @@
-// client.js
+// const express = require('express');
+// const multer = require('multer');
+// const path = require('path');
+// const app = express();
+
+// // Cấu hình multer để lưu trữ ảnh trong thư mục "uploads"
+// const storage = multer.diskStorage({
+//   destination: './uploads',
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + path.extname(file.originalname)); // Đặt tên file ảnh
+//   }
+// });
+
+// const upload = multer({ storage: storage });
+
+// // Endpoint để nhận ảnh
+// app.post('/upload', upload.single('image'), (req, res) => {
+//   try {
+//     console.log('File received:', req.file);
+//     res.json({ message: 'File uploaded successfully', file: req.file });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Error uploading file');
+//   }
+// });
+
+// app.listen(3000, () => {
+//   console.log('Server is running on port 3000');
+// });
+
+
+
+
+// // client.js
 const axios = require('axios');
 const fs = require('fs');
 const FormData = require('form-data');
@@ -7,7 +40,7 @@ async function sendImage() {
   try {
     // Tạo form data và thêm file vào
     const formData = new FormData();
-    formData.append('file', fs.createReadStream('./test_upload_file/barcode.jpg')); // Đường dẫn đến file ảnh
+    formData.append('image', fs.createReadStream('./test_upload_file/barcode_50.jpg')); // Đường dẫn đến file ảnh
 
     // Gửi yêu cầu POST đến server
     const response = await axios.post('http://localhost:7000/upload', formData, {

@@ -21,7 +21,8 @@ function getAccountPage(req,res) {
 
         const sampleData = {
             username : req.session.username,
-            books : filteredRows
+            books : filteredRows,
+            admin : req.session.admin
         }
         console.log(sampleData);
         res.render('account', sampleData);
@@ -43,6 +44,18 @@ function calculateDaysSince(dateString) {
     return daysDifference; // Trả về số ngày
 }
 
+function formatDate(dateString) {
+    // Chuyển đổi chuỗi ngày thành đối tượng Date
+    const date = new Date(dateString);
+
+    // Lấy năm, tháng và ngày rồi ghép lại thành chuỗi 'YYYY-MM-DD'
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const day = String(date.getUTCDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
 function returnBook(req,res) {
     const { item_id , date_borrow } = req.body;
 
@@ -57,11 +70,13 @@ function returnBook(req,res) {
             throw err
         }
         
-        // console.log('Done borrow book for '+ req.session.username);
+        console.log(`returnBook date_borrow = ${date_borrow}`);
         if(calculateDaysSince(date_borrow) >= 7){
+            var date = new Date();
+            var  currentDate = formatDate(date)
             var sql = "UPDATE authen_user SET ban = ?, date_ban = ? WHERE user_name = ?";
-            var data = [2, date_borrow , req.session.username]; // Dữ liệu truyền vào query
-            console.log("user return book late !!! set ban")
+            var data = [2, currentDate , req.session.username]; // Dữ liệu truyền vào query
+            console.log(`user return book late current date ${currentDate}!!! set ban`)
             mysql.query(sql,data,(err,row)=>{
                 if(err){
                     console.log('Error in query data')

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Borrow/Return System</title>
+    
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/search_bar.css">
+    <!-- Google Fonts (Optional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <%- include('particals/header') %>
+    
+    <!-- Hero Section -->
+    <%- include('particals/search_bar') %>
+
+    <%- include('particals/topic_list') %>
+
+    <!-- Book List Section -->
+    <%- include('particals/book_list') %>
+
+    <!-- Footer Section -->
+    <%- include('particals/footer') %>
+</body>
+<script>
+    // Hàm sẽ chạy khi người dùng nhấn nút
+    function confirmBorrow() {
+        const userName = "<%= user_name ? user_name : '' %>";
+        
+        if (userName) {
+            alert(`Congratulation !!! ${userName} has been borrow this book sucess.`);
+            // Thực hiện hành động khi user_name tồn tại
+        } else {
+            alert("Please login your account before borrow book !!!");
+            // Xử lý khi user_name không tồn tại
+        }
+
+    }
+</script>
+
+</html>

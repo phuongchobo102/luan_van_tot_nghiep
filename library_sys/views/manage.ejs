@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Page for Admin</title>
+    
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/manage.css">
+    <link rel="stylesheet" href="/css/search_bar.css">
+    <!-- Google Fonts (Optional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <%- include('particals/header') %>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to the Library</h1>
+            <h2>This is Manage Page for Admin</h2>
+            <%  if(action == "delete"){ %>
+                <form class="search-form" onsubmit="return false;">
+                    <input type="text" name="query" id="search-input" placeholder="Search for books by title, author...">
+                    <button type="button" id="start-record-btn">🎤</button>
+                    <button type="button" onclick="filterBooks()">Search</button> <!-- Chỉ gọi filterBooks() khi nhấn Search -->
+                </form>
+            <% }%>
+        </div>
+    </section>
+
+    <%- include('particals/topic_manage') %>
+
+    <% if (action == "add") { %>
+        <%- include('particals/manage/add_book') %>
+    <% }else if(action == "delete"){ %>
+        <%- include('particals/manage/delete_book') %>
+    <% }else if(action == "thong-ke"){ %>
+        <%- include('particals/manage/thong_ke') %>
+    <% }else if(action == "manage-user"){ %>
+        <h1>Welcome to the Library, <%= action %> </h1>
+    <% }%>
+
+    <!-- Footer Section -->
+    <%- include('particals/footer') %>
+</body>
+
+</html>

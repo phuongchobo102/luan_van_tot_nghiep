@@ -1,0 +1,56 @@
+/* Basic Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Đảm bảo navbar ở lớp trên các thành phần khác */
+    background-color: #004a99; /* Màu xanh đậm */
+    height: 15%; /* Điều chỉnh chiều cao của navbar */
+    padding: 0 20px; /* Khoảng cách giữa các nội dung bên trong navbar */
+    display: flex;
+    align-items: center; /* Canh giữa theo chiều dọc */
+    justify-content: space-between; /* Khoảng cách giữa brand và menu */
+}
+
+.navbar .brand {
+    font-size: 38px; /* Tăng kích thước chữ của tiêu đề */
+    font-weight: bold;
+    color: white;
+}
+
+.nav-menu {
+    font-size: 28px; /* Tăng kích thước chữ của tiêu đề */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-menu li {
+    margin-right: 20px; /* Khoảng cách giữa các mục menu */
+}
+
+.nav-menu li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px; /* Tăng kích thước chữ của menu */
+    font-weight: bold;
+    padding: 10px 15px; /* Tạo khoảng đệm xung quanh các liên kết */
+}
+
+.nav-menu li a:hover {
+    background-color: #003366; /* Màu nền khi di chuột qua */
+    border-radius: 5px; /* Góc bo tròn */
+}

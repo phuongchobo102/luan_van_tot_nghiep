@@ -5,8 +5,11 @@ static const char *TAG = "Connect_WiFi";
 int s_retry_num = 0;
 
 
-#define WIFI_SSID "HIEN DANH"
-#define WIFI_PASSWORD "20192020"
+// #define WIFI_SSID "Nhã Nam Nho Xanh"
+// #define WIFI_PASSWORD "nhungngaytuoidep"
+
+#define WIFI_SSID "The Barn Coffee 2.4G"
+#define WIFI_PASSWORD "caphe24h"
 #define MAXIMUM_RETRY 5
 /* FreeRTOS event group to signal when we are connected*/
 EventGroupHandle_t s_wifi_event_group;

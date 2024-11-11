@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/search_bar.css">
+
     <!-- Google Fonts (Optional) -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -18,17 +20,7 @@
     <%- include('particals/header') %>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>Welcome to the Library</h1>
-            <p>Borrow and return books easily with our system</p>
-            <form class="search-form" action="/home/search" method="POST">
-                <input type="text" name="query" placeholder="Search for books by title, author...">
-                <button type="button" id="start-record-btn">🎤</button> <!-- Nút micro -->
-                <button type="submit">Search</button>
-            </form>
-        </div>
-    </section>
+    <%- include('particals/search_bar') %>
 
     <%- include('particals/topic_list') %>
 
@@ -38,47 +30,5 @@
     <!-- Footer Section -->
     <%- include('particals/footer') %>
 </body>
-<script>
-    // Kiểm tra xem trình duyệt có hỗ trợ Web Speech API không
-    if ('webkitSpeechRecognition' in window) {
-        const recognition = new webkitSpeechRecognition();
-        const searchInput = document.getElementById('search-input');
-        const startRecordBtn = document.getElementById('start-record-btn');
 
-        // Thiết lập ngôn ngữ cho nhận diện giọng nói
-        recognition.lang = 'vi-VN'; // Thay đổi ngôn ngữ nếu cần
-        recognition.interimResults = false; // Không trả về kết quả tạm thời
-
-        // Bắt đầu nhận diện giọng nói
-        startRecordBtn.onclick = function() {
-            recognition.start();
-        };
-
-        // Xử lý khi nhận diện thành công
-        recognition.onresult = function(event) {
-            const transcript = event.results[0][0].transcript; // Lấy chuỗi đã nhận diện
-            searchInput.value = transcript; // Đặt giá trị vào ô tìm kiếm
-        };
-
-        // Xử lý khi có lỗi xảy ra
-        recognition.onerror = function(event) {
-            console.error('Error occurred in recognition: ' + event.error);
-        };
-    } else {
-        console.log('Web Speech API is not supported in this browser.');
-    }
-    // Hàm sẽ chạy khi người dùng nhấn nút
-    function confirmBorrow() {
-        const userName = "<%= user_name ? user_name : '' %>";
-        
-        if (userName) {
-            alert(`Congratulation !!! ${userName} has been borrow this book sucess.`);
-            // Thực hiện hành động khi user_name tồn tại
-        } else {
-            alert("Please login your account before borrow book !!!");
-            // Xử lý khi user_name không tồn tại
-        }
-
-    }
-</script>
 </html>
