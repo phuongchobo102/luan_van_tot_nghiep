@@ -1,34 +1,173 @@
-#include <esp_system.h>
-#include <nvs_flash.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "driver/gpio.h"
-
-#include "esp_camera.h"
-#include "esp_http_server.h"
-#include "esp_timer.h"
-#include "camera_pins.h"
-#include "connect_wifi.h"
-#include "esp_http_client.h"
-static const char *TAG = "esp32-cam Webserver";
+#include "main.h"
 
 
-#define PART_BOUNDARY "123456789000000000000987654321"
-static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
-static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
-static const char* _STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
+static esp_err_t init_camera(void);
+esp_err_t jpg_stream_httpd_handler(httpd_req_t *req);
+httpd_handle_t setup_server(void);
 
-#define CONFIG_XCLK_FREQ 20000000 
+static QueueHandle_t mov_sensor_queue = NULL;
+static void IRAM_ATTR gpio_irq(void* data)
+{
+  gpio_num_t gpio_num=(uint32_t)data;
+  xQueueSendFromISR(mov_sensor_queue,&gpio_num,0);
+}
 
-#define SER_POST_URL "http://192.168.1.53:7000/upload"
 
-typedef enum{
-    SEND,
-    NOTSEND
-}take_photo_req_t;
+void send_image();
+static void init_flash_light(void);
+static void set_flash(uint8_t cmd);
+static void init_button(void);
+static void ISR_gpio_task( void * pvParameters );
 
-// QueueHandle_t interupt_queue = NULL;
-static take_photo_req_t take_photo_req = NOTSEND;
+void app_main()
+{
+    mov_sensor_queue = xQueueCreate(10, sizeof(uint32_t));
+    init_button();
+
+    esp_err_t err;
+    // // Initialize NVS
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
+    {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    // esp_i2c_master_init();
+    // start_lcd();
+    connect_wifi();
+
+    if (wifi_connect_status)
+    {
+        init_flash_light();
+        set_flash(1);
+        // init_io0_button();
+        ESP_LOGI(TAG, "ESP32 CAM Web Server init_camera\n");
+        err = init_camera();
+        // err = ESP_OK;
+        if (err != ESP_OK)
+        {
+            printf("err: %s\n", esp_err_to_name(err));
+            return;
+        }
+        // esp_i2c_master_init();
+        // start_lcd();
+        // lcd_begin();
+        // uint8_t idx = 0;
+        // while(true){
+            // lcd_put_cur(0, 10);
+            // if((idx++ % 2 )== 0)
+            //     lcd_send_string("1");
+            // else{
+            //     lcd_send_string("9");
+            // }
+            // vTaskDelay(5000/portTICK_PERIOD_MS);
+            // send_image();
+        // }
+        xTaskCreate(ISR_gpio_task,"ISR_gpio_task",4096,NULL,10,NULL);//create task freertos   ///
+    }
+    else{
+        ESP_LOGI(TAG, "Failed to connected with Wi-Fi, check your network Credentials\n");
+    }
+
+}
+
+void send_image(){
+    // 1. Chụp ảnh
+    camera_fb_t *pic = esp_camera_fb_get(); // Chụp ảnh và lưu ảnh vào `pic`
+    esp_camera_fb_return(pic); 
+    pic = esp_camera_fb_get(); 
+    // 2. Thiết lập yêu cầu HTTP
+    esp_http_client_config_t config = {
+        .url = SER_POST_URL,
+        .method = HTTP_METHOD_POST,
+        .cert_pem = NULL,
+    };
+
+    esp_http_client_handle_t client = esp_http_client_init(&config);
+
+    // 3. Cấu hình header
+    // 2. Thiết lập phần header cho `multipart/form-data`
+    esp_http_client_set_header(client, "Content-Type", "multipart/form-data; boundary=boundary-string");
+    
+    char boundary[] = "--boundary-string\r\n";
+    char end_boundary[] = "\r\n--boundary-string--\r\n";
+    char content_disposition[] = "Content-Disposition: form-data; name=\"image\"; filename=\"image.jpg\"\r\n";
+    char content_type[] = "Content-Type: image/jpeg\r\n\r\n";
+
+    // Tính toán tổng kích thước của yêu cầu POST
+    int body_len = strlen(boundary) + strlen(content_disposition) + strlen(content_type) + pic->len + strlen(end_boundary);
+
+    // Mở kết nối HTTP với kích thước nội dung
+    esp_http_client_open(client, body_len);
+
+    // Gửi các phần của `multipart/form-data` theo thứ tự
+    esp_http_client_write(client, boundary, strlen(boundary));
+    esp_http_client_write(client, content_disposition, strlen(content_disposition));
+    esp_http_client_write(client, content_type, strlen(content_type));
+    esp_http_client_write(client, (const char *)pic->buf, pic->len); // Gửi dữ liệu ảnh
+    esp_http_client_write(client, end_boundary, strlen(end_boundary)); // Kết thúc
+
+    // Đóng kết nối HTTP
+    esp_http_client_close(client);
+    esp_http_client_cleanup(client);
+    esp_camera_fb_return(pic); // Giải phóng ảnh khỏi bộ nhớ
+}
+
+
+static void init_flash_light(void)
+{
+  gpio_config_t gpio_2config;
+  gpio_2config.pin_bit_mask=1<<GPIO_NUM_4;
+  gpio_2config.mode=GPIO_MODE_OUTPUT;
+  gpio_2config.intr_type=GPIO_INTR_DISABLE;
+  gpio_2config.pull_down_en=GPIO_PULLDOWN_DISABLE;
+  gpio_2config.pull_up_en=GPIO_PULLDOWN_DISABLE;
+  gpio_config(&gpio_2config);
+  gpio_set_level(GPIO_NUM_4,0);
+}
+
+static void init_button(void)
+{
+    gpio_config_t gpio_cfg;
+    gpio_cfg.pin_bit_mask=1<<GPIO_NUM_15;
+    gpio_cfg.mode=GPIO_MODE_INPUT;
+    gpio_cfg.intr_type=GPIO_INTR_POSEDGE;
+    gpio_cfg.pull_down_en=GPIO_PULLDOWN_ENABLE;
+    gpio_cfg.pull_up_en=GPIO_PULLDOWN_DISABLE;
+    gpio_config(&gpio_cfg);
+    gpio_install_isr_service(0);
+
+    gpio_isr_handler_add(GPIO_NUM_15,gpio_irq,(void*)GPIO_NUM_15);
+    gpio_intr_enable(GPIO_NUM_15);
+}
+
+static void set_flash(uint8_t cmd){
+  gpio_set_level(GPIO_NUM_4,cmd);
+}
+
+
+static void ISR_gpio_task( void * pvParameters )
+{
+  for(;;)
+    {
+    uint32_t io_num;
+    if (xQueueReceive(mov_sensor_queue, &io_num, 0)==pdTRUE)
+    {
+    // set_flash(1);
+    // while(xQueueReceive(mov_sensor_queue, &io_num, 0)==pdTRUE){}
+    printf("open door\n");
+    send_image();
+    // set_flash(0);
+    vTaskDelay(1000/portTICK_PERIOD_MS);
+    }
+    
+    while(xQueueReceive(mov_sensor_queue, &io_num, 0)==pdTRUE){}
+    vTaskDelay(100/portTICK_PERIOD_MS);
+    
+    }
+}
+
+
 
 static esp_err_t init_camera(void)
 {
@@ -137,11 +276,7 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req){
     return res;
 }
 
-httpd_uri_t uri_get = {
-    .uri = "/",
-    .method = HTTP_GET,
-    .handler = jpg_stream_httpd_handler,
-    .user_ctx = NULL};
+
 httpd_handle_t setup_server(void)
 {
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
@@ -153,131 +288,4 @@ httpd_handle_t setup_server(void)
     }
 
     return stream_httpd;
-}
-void send_image();
-static void init_flash_light(void);
-static void set_flash(uint8_t cmd);
-static void init_io0_button(void);
-static void ISR_gpio_task( void * pvParameters );
-void app_main()
-{
-    esp_err_t err;
-    // Initialize NVS
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
-    {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-
-    connect_wifi();
-
-    if (wifi_connect_status)
-    {
-        init_flash_light();
-        set_flash(1);
-        // init_io0_button();
-        ESP_LOGI(TAG, "ESP32 CAM Web Server init_camera\n");
-        err = init_camera();
-        // err = ESP_OK;
-        if (err != ESP_OK)
-        {
-            printf("err: %s\n", esp_err_to_name(err));
-            return;
-        }
-        while(true){
-            vTaskDelay(10000/portTICK_PERIOD_MS);
-            send_image();
-        }
-        // xTaskCreate(ISR_gpio_task,"ISR_gpio_task",4096,NULL,10,NULL);//create task freertos   ///
-    }
-    else{
-        ESP_LOGI(TAG, "Failed to connected with Wi-Fi, check your network Credentials\n");
-    }
-
-}
-
-void send_image(){
-    // 1. Chụp ảnh
-    camera_fb_t *pic = esp_camera_fb_get(); // Chụp ảnh và lưu ảnh vào `pic`
-
-    // 2. Thiết lập yêu cầu HTTP
-    esp_http_client_config_t config = {
-        .url = SER_POST_URL,
-        .method = HTTP_METHOD_POST,
-        .cert_pem = NULL,
-    };
-
-    esp_http_client_handle_t client = esp_http_client_init(&config);
-
-    // 3. Cấu hình header
-    // 2. Thiết lập phần header cho `multipart/form-data`
-    esp_http_client_set_header(client, "Content-Type", "multipart/form-data; boundary=boundary-string");
-    
-    char boundary[] = "--boundary-string\r\n";
-    char end_boundary[] = "\r\n--boundary-string--\r\n";
-    char content_disposition[] = "Content-Disposition: form-data; name=\"image\"; filename=\"image.jpg\"\r\n";
-    char content_type[] = "Content-Type: image/jpeg\r\n\r\n";
-
-    // Tính toán tổng kích thước của yêu cầu POST
-    int body_len = strlen(boundary) + strlen(content_disposition) + strlen(content_type) + pic->len + strlen(end_boundary);
-
-    // Mở kết nối HTTP với kích thước nội dung
-    esp_http_client_open(client, body_len);
-
-    // Gửi các phần của `multipart/form-data` theo thứ tự
-    esp_http_client_write(client, boundary, strlen(boundary));
-    esp_http_client_write(client, content_disposition, strlen(content_disposition));
-    esp_http_client_write(client, content_type, strlen(content_type));
-    esp_http_client_write(client, (const char *)pic->buf, pic->len); // Gửi dữ liệu ảnh
-    esp_http_client_write(client, end_boundary, strlen(end_boundary)); // Kết thúc
-
-    // Đóng kết nối HTTP
-    esp_http_client_close(client);
-    esp_http_client_cleanup(client);
-    esp_camera_fb_return(pic); // Giải phóng ảnh khỏi bộ nhớ
-}
-
-
-static void init_flash_light(void)
-{
-  gpio_config_t gpio_2config;
-  gpio_2config.pin_bit_mask=1<<GPIO_NUM_4;
-  gpio_2config.mode=GPIO_MODE_OUTPUT;
-  gpio_2config.intr_type=GPIO_INTR_DISABLE;
-  gpio_2config.pull_down_en=GPIO_PULLDOWN_DISABLE;
-  gpio_2config.pull_up_en=GPIO_PULLDOWN_DISABLE;
-  gpio_config(&gpio_2config);
-  gpio_set_level(GPIO_NUM_4,0);
-}
-
-static void init_io0_button(void)
-{
-    gpio_config_t gpio_cfg;
-    gpio_cfg.pin_bit_mask=1<<GPIO_NUM_0;
-    gpio_cfg.mode=GPIO_MODE_INPUT;
-    gpio_cfg.intr_type=GPIO_INTR_DISABLE;
-    gpio_cfg.pull_down_en=GPIO_PULLDOWN_DISABLE;
-    gpio_cfg.pull_up_en=GPIO_PULLDOWN_DISABLE;
-    gpio_config(&gpio_cfg);
-}
-
-static void set_flash(uint8_t cmd){
-  gpio_set_level(GPIO_NUM_4,cmd);
-}
-
-
-static void ISR_gpio_task( void * pvParameters )
-{
-    static int idx =0,odd =0;
-    uint32_t io_num = 0;
-    for(;;){
-        if(gpio_get_level(GPIO_NUM_0) == 0){
-            printf("button have been pressing !!!\n");
-            vTaskDelay(400/portTICK_PERIOD_MS);
-        }
-        else{
-            vTaskDelay(10/portTICK_PERIOD_MS);
-        }
-    }
 }

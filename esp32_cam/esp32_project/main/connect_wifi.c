@@ -8,8 +8,15 @@ int s_retry_num = 0;
 // #define WIFI_SSID "Nhã Nam Nho Xanh"
 // #define WIFI_PASSWORD "nhungngaytuoidep"
 
-#define WIFI_SSID "The Barn Coffee 2.4G"
-#define WIFI_PASSWORD "caphe24h"
+// #define WIFI_SSID "The Barn Coffee 2.4G"
+// #define WIFI_PASSWORD "caphe24h"
+
+// #define WIFI_SSID "CHDV DBL LUNG"
+// #define WIFI_PASSWORD "TLP@368368"
+
+#define WIFI_SSID "phuong_laptop"
+#define WIFI_PASSWORD "Elinkgate@35"
+
 #define MAXIMUM_RETRY 5
 /* FreeRTOS event group to signal when we are connected*/
 EventGroupHandle_t s_wifi_event_group;
