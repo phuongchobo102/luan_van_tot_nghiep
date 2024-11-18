@@ -1,5 +1,6 @@
 const mysql = require('../../data_base/data_base')
 const date = new Date();
+const { renderPage } = require('./render_page');
 
 
 function getHomePage(req,res){
@@ -17,7 +18,9 @@ function getHomePage(req,res){
         const time_unlock = req.session.date_ban;
         const  admin = req.session.admin;
         // console.log( req.session.date_ban);
-        res.render('home', {user_name,books,ban,time_unlock, admin });
+        // res.render('home', {user_name,books,ban,time_unlock, admin });
+        // console.log(admin)
+        renderPage(res,'home',{user_name,books,ban,time_unlock, admin });
     })
     
     // res.redirect("/login");
@@ -84,7 +87,11 @@ function search(req,res){
         );
         const ban = req.session.ban;
         const time_unlock = req.session.date_ban;
-        res.render('book', {user_name,books,ban,time_unlock});
+        // const ban = req.session.ban;
+        // const time_unlock = req.session.date_ban;
+        const  admin = req.session.admin;
+        console.log(books)
+        res.render('book', {user_name,books,ban,time_unlock,admin});
     })
     // Xử lý hoặc sử dụng searchQuery để tìm kiếm sách
     console.log("Search query:", searchQuery);

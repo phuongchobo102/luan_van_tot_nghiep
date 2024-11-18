@@ -13,7 +13,7 @@ const login = require('./routes/login');
 const home = require('./routes/home');
 const account = require('./routes/account');
 const book = require('./routes/book');
-const upload = require('./esp32_cam/upload')
+// const upload = require('./esp32_cam/upload')
 const manage = require('./routes/manage')
 const app = express();
 
@@ -34,7 +34,8 @@ app.use(expressSession({
         maxAge: 24 * 60 * 60 * 1000 // Set session expiration (e.g., 24 hours)
     }
 }));
- 
+app.use(bodyParser.json());
+
 // Sử dụng EJS làm template engine
 app.set('view engine', 'ejs');
 
@@ -50,11 +51,11 @@ app.use('/', account)
 // add route to book page;
 app.use('/', book)
 // add route to upload file;
-app.use('/', upload)
+// app.use('/', upload)
 // add route to manage page;
 app.use('/', manage)
 
 
 app.listen(7000, (req, res) => {
-    console.log("App is running on port 7000")
+    console.log("App is running on port 3000")
 })

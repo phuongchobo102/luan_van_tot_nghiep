@@ -2,7 +2,8 @@ const express = require('express');
 const mysql = require('../data_base/data_base')
 const { exec } = require('child_process');// use for run python code
 const multer = require('multer');
-const path = require('path');
+// const path = require('path');
+const {calculateDaysSince,formatDate } = require('../routes/controller/render_page');
 
 function parseNumber(str) {
     return parseInt(str, 10); // Chuyển chuỗi thành số nguyên
@@ -19,22 +20,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-function calculateDaysSince(dateString) {
-    // Chuyển đổi chuỗi ngày từ định dạng YYYY-MM-DD sang đối tượng Date
-    const startDate = new Date(dateString + 'T00:00:00'); // Đảm bảo giờ là 00:00:00
-    const currentDate = new Date(); // Ngày hiện tại
-
-    // Đặt giờ của currentDate về 00:00:00 để chỉ so sánh ngày
-    currentDate.setHours(0, 0, 0, 0);
-
-    // Tính số ngày giữa hai ngày
-    const timeDifference = currentDate - startDate; // Đơn vị là milliseconds
-    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24)); // Chuyển đổi milliseconds sang days
-
-    return daysDifference; // Trả về số ngày
-}
-
 
 // Endpoint d? nh?n ?nh
 upload_router.post('/upload', upload.single('image'), (req, res) => {
@@ -53,41 +38,63 @@ upload_router.post('/upload', upload.single('image'), (req, res) => {
             }
             // console.log(`Python s cript output: ${stdout}`);
             console.log(`data barcode scan ${parseNumber(stdout)}`);
+            // console.log(stdout);
             const item_id = parseNumber(stdout);
             // res.json({ message: 'File uploaded and processed successfully!', result: stdout });
             // Lệnh SQL để update giá trị cột user cho id = 2
+            console.log(item_id);
 
-
-            // return book to table
-            mysql.query('select * from Book where item_id = ? ',[item_id],(err,book)=>{
-                console.log(`Book was borrow by ${book.borrow_user}`);
-
-                if(calculateDaysSince(book.date_borrow) >= 7){
-                    var sql = "UPDATE authen_user SET ban = ?, date_ban = ? WHERE user_name = ?";
-                    var data = [2, book.date_borrow , req.session.username]; // Dữ liệu truyền vào query
-                    console.log("user return book late !!! set ban")
-                    mysql.query(sql,data,(err,row)=>{
-                        if(err){
-                            console.log('Error in query data')
-                            throw err;
-                        }
-        
-                        res.redirect("Ban sucess on upload route");
-                    });
-                }else{
-                    console.log("user return book ontime")
-                    // res.redirect("/home/account");
-                }
-                var sql = "UPDATE Book SET borrow_user = ?, issue = ? WHERE item_id = ?";
-                var data = ['NULL', 0 , item_id]; // Dữ liệu truyền vào query
-                mysql.query(sql,data,(err,row)=>{
-                    if(err){
-                        console.log('Error in query data')
-                        throw err
+            if(!Number.isNaN(item_id)){
+                // return book to table
+                mysql.query('select * from Book' ,(err,row)=>{
+                    if (err) {
+                        console.error('Error executing query:', err.stack);
+                        return;
                     }
-                    console.log(`Return book id ${item_id} sucess!!!`);
+                    // console.log(row[item_id]);
+                    row.forEach((book,index) => {
+                        if(book.item_id == item_id){
+                            console.log(`${book.book} was borrow by ${book.borrow_user} issue ${book.issue}`);
+                            if(book.issue == 1){
+                                if(calculateDaysSince(book.date_borrow) >= req.session.user_data.max_loan){
+                                    var date = new Date();
+                                    var  currentDate = formatDate(date)
+                                    var sql = "UPDATE authen_user SET ban = ?, date_ban = ? WHERE user_name = ?";
+                                    var data = [2, currentDate , req.session.username]; // Dữ liệu truyền vào query
+                                    console.log(`user return book late current date ${currentDate}!!! set ban`)
+                                    mysql.query(sql,data,(err,row)=>{
+                                        if(err){
+                                            console.log('Error in query data')
+                                            throw err;
+                                        }
+                        
+                                        console.log("Ban sucess on upload route");
+                                    });
+                                }else{
+                                    console.log("user return book ontime")
+                                }
+                                var sql = "UPDATE Book SET borrow_user = ?, issue = ? WHERE item_id = ?";
+                                var data = ['NULL', 0 , item_id]; // Dữ liệu truyền vào query
+                                mysql.query(sql,data,(err,row)=>{
+                                    if(err){
+                                        console.log('Error in query data')
+                                        throw err
+                                    }
+                                    console.log(`Return book id ${item_id} sucess!!!`);
+                                });
+                            }
+                            else if(book.issue == 0){
+                                console.log("This book was not borrow by anyone !!! Do notthing")
+                            }
+                        }
+                    });
+
+
                 });
-            });
+            }
+            else{
+                console.log(`Can not scan barcode data, please rescan again`);
+            }
         });
     } catch (error) {
         console.error(error);

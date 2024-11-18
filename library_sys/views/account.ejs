@@ -19,35 +19,17 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Welcome back <%= username %>!</h1>
-            <p>Borrow and return books easily with our system</p>
+            <h1>Welcome back <%= user.user_name %>!</h1>
+            <p>Bạn đang đăng nhập với tư cách là <%= user.permission %></p>
         </div>
     </section>
 
     <!-- Nội dung chính -->
-    <section class="book-list">
-        <div class="container">
-            <h2>Your Borrowed Books</h2>
-            <% if (books.length === 0) { %>
-                <p>You have no borrowed books at the moment.</p>
-            <% } else { %>
-                <div class="book-grid">
-                    <% books.forEach(function(book) { %>
-                        <div class="book-card">
-                            <img src="<%= book.image %>" alt="<%= book.title %>" class="book-cover">
-                            <h3><%= book.book %></h3>
-                            <p>By <strong><%= book.author %></strong></p>
-                            <p><strong>Borrowed Date:</strong> <%= new Date(book.date_borrow).toISOString().split('T')[0] %></p>
-                            <form action="/home/account" method="POST">
-                                <input type="hidden" name="item_id" value="<%= book.item_id %>">
-                                <input type="hidden" name="date_borrow" value="<%= new Date(book.date_borrow).toISOString().split('T')[0] %>">
-                                <button type="submit" class="return-button" onclick="confirmBorrow()" >Trả sách</button>
-                            </form>
-                        </div>
-            <% }); %>
-        </div>
-        <% } %>
-    </section>
+    <% if (books.length === 0) { %>
+        <p class="list_title">You have no borrowed books at the moment.</p>
+    <% } else { %>
+        <%- include('particals/account_list') %>
+    <% } %>
 
 
     <!-- Footer Section -->

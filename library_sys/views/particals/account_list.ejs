@@ -1,0 +1,126 @@
+<main class="book-table-container">
+    <h2>Bảng thống kê sách bạn đọc đã mượn</h2>
+    <table class="book-table" id="book-table">
+        <thead>
+            <tr>
+                <th>Tên Sách</th>
+                <th>Tác Giả</th>
+                <th>Ngày Mượn</th>
+                <th>Hạn Trả</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody id="book-tbody" >
+            <% books.forEach((book, index) => { 
+                // Kiểm tra xem sách có quá hạn không
+                const isLate = new Date() > new Date(book.date_borrow).setDate(new Date(book.date_borrow).getDate() + user.max_loan);
+                %>
+                <tr class="<%= isLate ? 'late' : '' %> <%= (index % 2 === 0) ? 'even' : '' %>">
+                    <td><%= book.book %></td>
+                    <td><%= book.author %></td>
+                    <td><%= new Date(book.date_borrow).toLocaleDateString('vi-VN') %></td>
+                    <td><%= new Date(new Date(book.date_borrow).setDate(new Date(book.date_borrow).getDate() + user.max_loan)).toLocaleDateString('vi-VN') %></td>
+                    <td><%= isLate ? 'Quá hạn' : 'Còn hạn' %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <% if (typeof alertt !== 'undefined' && alertt) { %>
+        <script>
+          window.onload = function() {
+            alertt = false;
+            alert("Chúc mừng bạn đã thao tác xóa sách thành công trên hệ thống!!!")
+          }
+        </script>
+    <% } %>
+    <a href="/manage" class="back-link">Quay lại Trang Quản Trị</a>
+</main>
+
+<style>
+/* CSS cho khối main */
+.book-table-container {
+    margin-left: 10%; /* căn lề trái hoàn toàn */
+    text-align: left; /* Căn lề trái cho nội dung bên trong */
+    width: 80%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.book-table-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* CSS cho bảng */
+.book-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.book-table th, .book-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.book-table th {
+    background-color: #0073e6;
+    color: #fff;
+}
+
+/* Màu nền cho hàng chẵn */
+.book-table tr.even {
+    background-color: #f2f2f2; /* Màu nền nhẹ cho các hàng chẵn */
+}
+
+/* Màu nền cho các sách quá hạn */
+.book-table tr.late {
+    background-color: rgba(255, 0, 0, 0.623); /* Màu nền đỏ cho các sách quá hạn */
+    color: white; /* Màu chữ trắng để dễ đọc */
+}
+
+/* Màu nền cho các sách quá hạn */
+.book-table tr.late:hover {
+    background-color: #e0f7fa; /* Màu nền đỏ cho các sách quá hạn */
+    color: #ff4d4d; /* Màu chữ trắng để dễ đọc */
+}
+
+.book-table tr:hover {
+    background-color: #e0f7fa;
+    color: #0073e6; /* Màu chữ trắng để dễ đọc */
+    font-weight: bold; /* Chữ sẽ trở nên in đậm */
+    cursor: pointer; /* Thêm dấu mũi tên khi di chuột vào hàng */
+}
+
+
+.delete-button {
+    padding: 6px 12px;
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #ff1a1a;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #0073e6;
+    font-weight: bold;
+    text-align: center;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+</style>

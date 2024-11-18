@@ -1,4 +1,5 @@
 const mysql = require('../../data_base/data_base')
+const {calculateDaysSince,formatDate } = require('./render_page');
 
 const NOT_BAN = 1;
 const BAN = 2;
@@ -19,34 +20,6 @@ mysql.query('select * from authen_user',(err,row)=>{
     // console.log(rows)
 })
 
-
-
-function calculateDaysSince(dateString) {
-    // Chuyển đổi chuỗi ngày từ định dạng YYYY-MM-DD sang đối tượng Date
-    const startDate = new Date(dateString + 'T00:00:00'); // Đảm bảo giờ là 00:00:00
-    const currentDate = new Date(); // Ngày hiện tại
-
-    // Đặt giờ của currentDate về 00:00:00 để chỉ so sánh ngày
-    currentDate.setHours(0, 0, 0, 0);
-
-    // Tính số ngày giữa hai ngày
-    const timeDifference = currentDate - startDate; // Đơn vị là milliseconds
-    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24)); // Chuyển đổi milliseconds sang days
-
-    return daysDifference; // Trả về số ngày
-}
-
-function formatDate(dateString) {
-    // Chuyển đổi chuỗi ngày thành đối tượng Date
-    const date = new Date(dateString);
-
-    // Lấy năm, tháng và ngày rồi ghép lại thành chuỗi 'YYYY-MM-DD'
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-    const day = String(date.getUTCDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-}
 function authenUser(req,res){
     // console.log(rows)
     // console.log(`authenUser user= ${req.body.user} password = ${req.body.password}`)
@@ -80,6 +53,8 @@ function authenUser(req,res){
         });
         // user_pass = true;
         if(user_pass == true){
+            req.session.user_data = rows[idx]
+            // console.log(rows[idx])
             req.session.loggedin = true;
             req.session.username = rows[idx].user_name;
             req.session.ban = NOT_BAN;
@@ -102,17 +77,17 @@ function authenUser(req,res){
                         const date_borrow =  book.date_borrow;
                         const formattedDate = formatDate(date_borrow);
                         const time_diff = calculateDaysSince(formattedDate);
-                        console.log(time_diff)
+                        // console.log(time_diff)
                         if(time_diff > max) {
                             max = time_diff;
                             // console.log(max)
                         }
                     }
                 });
-                console.log(max)
+                // console.log(max)
                 // done find max day borrow
-                if (max >= 7){
-                    console.log("muon khong tra => ban user")
+                if (max >= req.session.user_data.max_loan){
+                    // console.log("muon khong tra => ban user")
                     // muon sach ko tra bi qua han
                     // direct ban
                     req.session.ban = BAN;
@@ -122,12 +97,12 @@ function authenUser(req,res){
                 // check data authen_user table
                 if(rows[idx].ban == BAN){
                     const date_ban =  rows[idx].date_ban;
-                    console.log(date_ban)
+                    // console.log(date_ban)
                     const formattedDate = formatDate(date_ban);
-                    console.log(formattedDate)
+                    // console.log(formattedDate)
                     const time_diff = calculateDaysSince(formattedDate);
-                    console.log(time_diff);
-                    if(time_diff >= 30){
+                    // console.log(time_diff);
+                    if(time_diff >= req.session.user_data.max_loan){
                         // unlock ban user
                         const sql = "UPDATE authen_user SET ban = ? WHERE user_name = ?";
                         const data = [ 1 , req.session.username]; // Dữ liệu truyền vào query
@@ -149,7 +124,7 @@ function authenUser(req,res){
                         // ban
                         // not ban 
                         req.session.ban = BAN;
-                        req.session.date_ban = 30 - time_diff;
+                        req.session.date_ban = req.session.user_data.max_loan - time_diff;
                         // console.log(time_diff)
                         // console.log(30 - time_diff)
                         return res.redirect("/home");

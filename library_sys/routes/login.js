@@ -7,7 +7,8 @@ const login_router = express.Router();
 function checkLogin(req, res, next){
     // return next();
     // console.log(`checking path ${req.path} ${req.method}`)
-    if ((req.method == 'GET' && req.path == "/") || (req.method == 'GET' && req.path == "/home") || (req.method == 'POST' && req.path == "/upload")){
+    if ((req.method == 'GET' && req.path == "/") || (req.method == 'GET' && req.path == "/home") 
+        || (req.method == 'POST' && req.path == "/upload") || (req.method == 'POST' && req.path == "/home/account")){
         // console.log("pass check login 1")
         return next();
     }

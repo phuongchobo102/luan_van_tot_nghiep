@@ -14,6 +14,7 @@
     justify-content: center;
     flex-direction: column;
     text-align: center;
+    margin-top: 5%; /* Cách bên trên 20% */
 }
 
 .hero h1 {
