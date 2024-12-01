@@ -69,6 +69,10 @@ function filterBooks() {
     });
 }
 function removeAccents(str) {
+    if (!str) {
+        // Nếu str là null, undefined, hoặc rỗng, trả về chuỗi rỗng
+        return "";
+    }
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }   
 

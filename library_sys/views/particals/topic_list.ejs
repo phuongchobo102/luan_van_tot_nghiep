@@ -3,11 +3,9 @@
     <h2>Danh mục sách</h2>
     <ul>
         <li><a href="/books">Tất cả sách</a></li>
-        <li><a href="/books/giao-trinh">Sách giáo trình</a></li>
-        <li><a href="/books/tham-khao">Sách tham khảo</a></li>
-        <li><a href="/books/tieu-thuyet">Tiểu thuyết</a></li>
-        <li><a href="/books/truyen">Truyện</a></li>
-        <li><a href="/books/khac">Khác</a></li>
+        <% topics.forEach(function(topic) { %>
+            <li><a href="<%= topic.slug %>"><%= topic.name %></a></li>
+        <% }); %>
     </ul>
 </div>
 

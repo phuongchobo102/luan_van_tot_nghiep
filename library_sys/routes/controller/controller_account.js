@@ -1,4 +1,4 @@
-const mysql = require('../../data_base/data_base')
+const {mysql , topics} = require('../../data_base/data_base')
 const {calculateDaysSince,formatDate } = require('./render_page');
 
 const VALID = 1

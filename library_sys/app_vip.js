@@ -1,32 +1,30 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
+const bodyParser = require('body-parser');
+
 const app = express();
+const port = 7000;
 
-var  index =0;
-// C?u h�nh multer d? luu tr? ?nh trong thu m?c "uploads"
-const storage = multer.diskStorage({
-  destination: './uploads',
-  filename: function (req, file, cb) {
+// Middleware để parse JSON
+app.use(bodyParser.json());
 
-    cb(null, index.toString() + Date.now() + path.extname(file.originalname)); // �?t t�n file ?nh
-    index++;
-}
+// Endpoint nhận POST yêu cầu từ client
+app.post('/pi_2w_query', (req, res) => {
+    const { book, ibsn } = req.body;
+
+    // In ra dữ liệu nhận được từ client
+    console.log("Dữ liệu nhận được từ client:", book, ibsn);
+
+    // Trả về dữ liệu books
+    const books = [
+        {"name": "sach 1", "author": "Nguyễn Văn A", "status": "yes"},
+        {"name": "sach 2", "author": "Trần Văn B", "status": "no"},
+        {"name": "phuong dep trai", "author": "Lê Thị C", "status": "no"}
+    ];
+
+    res.json(books); // Trả về JSON
 });
 
-const upload = multer({ storage: storage });
-
-// Endpoint d? nh?n ?nh
-app.post('/upload', upload.single('image'), (req, res) => {
-  try {
-    console.log('File received:', req.file);
-    res.json({ message: 'File uploaded successfully', file: req.file });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error uploading file');
-  }
-});
-
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+// Bắt đầu server
+app.listen(port, () => {
+    console.log(`Server đang chạy tại http://localhost:${port}`);
 });

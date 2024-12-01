@@ -15,6 +15,8 @@ const account = require('./routes/account');
 const book = require('./routes/book');
 // const upload = require('./esp32_cam/upload')
 const manage = require('./routes/manage')
+const pi_query = require('./routes/pi_query')
+
 const app = express();
 
 
@@ -54,8 +56,22 @@ app.use('/', book)
 // app.use('/', upload)
 // add route to manage page;
 app.use('/', manage)
+// add route for pi 2w query data
+app.use('/', pi_query)
 
 
 app.listen(7000, (req, res) => {
     console.log("App is running on port 3000")
+})
+
+app.listen(8080, (req, res) => {
+    console.log("App is running on port 8080")
+})
+
+app.listen(8000, (req, res) => {
+    console.log("App is running on port 8000")
+})
+
+app.listen(80, (req, res) => {
+    console.log("App is running on port 80")
 })

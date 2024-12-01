@@ -6,11 +6,10 @@
     <title>Manage Page for Admin</title>
     
     <!-- Link to external CSS -->
-    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/manage.css">
-    <link rel="stylesheet" href="/css/search_bar.css">
+    <link rel="stylesheet" href="/css/search_bar_manage.css">
     <!-- Google Fonts (Optional) -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -43,7 +42,7 @@
     <% }else if(action == "thong-ke"){ %>
         <%- include('particals/manage/thong_ke') %>
     <% }else if(action == "manage-user"){ %>
-        <h1>Welcome to the Library, <%= action %> </h1>
+        <%- include('particals/manage/user_list') %>
     <% }%>
 
     <!-- Footer Section -->

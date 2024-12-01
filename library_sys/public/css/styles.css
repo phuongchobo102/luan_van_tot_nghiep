@@ -134,7 +134,7 @@ body {
     background-color: #1c5980;  /* Màu xanh đậm khi nhấn */
     transform: scale(0.98);  /* Thu nhỏ nhẹ khi nhấn */
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);  /* Giảm độ mạnh của bóng khi nhấn */
-}
+} 
 
 .return-button {
     display: inline-block;

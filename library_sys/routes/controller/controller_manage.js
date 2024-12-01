@@ -1,4 +1,4 @@
-const mysql = require('../../data_base/data_base')
+const {mysql , topics} = require('../../data_base/data_base')
 
 function getmanagePage(req,res){
     const user_name = req.session.username
@@ -86,7 +86,15 @@ function manageUserPage(req,res){
     const  admin = req.session.admin;
     const action = "manage-user";
     // console.log( req.session.date_ban);
-    res.render('manage', {user_name, admin, action });
+    mysql.query('select * from authen_user' ,(err,user_list)=>{
+        if(err){
+          console.log('Error in query data')
+          throw err
+        }
+        // const books = row;
+        res.render('manage', {user_name, admin, action ,user_list});
+    })
+    // res.render('manage', {user_name, admin, action });
 }
 
 function deleteBookProcess(req,res){

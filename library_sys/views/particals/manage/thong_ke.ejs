@@ -5,7 +5,8 @@
             <tr>
                 <th>Tên Sách</th>
                 <th>Tác Giả</th>
-                <th>Ngày Thêm</th>
+                <th>Mã ISBN</th>
+                <th>Ngày Xuất Bản</th>
                 <th>Lượt Mượn</th>
             </tr>
         </thead>
@@ -14,6 +15,7 @@
                 <tr>
                     <td><%= book.book %></td>
                     <td><%= book.author %></td>
+                    <td><%= book.isbn %></td>
                     <td><%= new Date(book.create_on_date).toLocaleDateString('vi-VN') %></td>
                     <td><%= book.times_borrow %></td>
                 </tr>

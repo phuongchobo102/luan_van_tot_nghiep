@@ -1,8 +1,9 @@
-const mysql = require('../../data_base/data_base')
+const {mysql , topics} = require('../../data_base/data_base')
 const {calculateDaysSince,formatDate } = require('./render_page');
 
 const NOT_BAN = 1;
 const BAN = 2;
+const TIME_LOCK_BAN = 30;
 
 function getLoginPage(req,res){
     // res.render("login", {var1 : "phuong"});
@@ -18,7 +19,7 @@ mysql.query('select * from authen_user',(err,row)=>{
     // store row
     rows = row ;
     // console.log(rows)
-})
+});
 
 function authenUser(req,res){
     // console.log(rows)
@@ -102,7 +103,7 @@ function authenUser(req,res){
                     // console.log(formattedDate)
                     const time_diff = calculateDaysSince(formattedDate);
                     // console.log(time_diff);
-                    if(time_diff >= req.session.user_data.max_loan){
+                    if(time_diff >= TIME_LOCK_BAN){
                         // unlock ban user
                         const sql = "UPDATE authen_user SET ban = ? WHERE user_name = ?";
                         const data = [ 1 , req.session.username]; // Dữ liệu truyền vào query
@@ -124,7 +125,7 @@ function authenUser(req,res){
                         // ban
                         // not ban 
                         req.session.ban = BAN;
-                        req.session.date_ban = req.session.user_data.max_loan - time_diff;
+                        req.session.date_ban = TIME_LOCK_BAN - time_diff;
                         // console.log(time_diff)
                         // console.log(30 - time_diff)
                         return res.redirect("/home");
@@ -167,17 +168,68 @@ function registerAccount(req,res){
     if (!req.body.password || !req.body.user) {
         return res.render("register", {loginMessage : "Please fill your user name and password"});
     }
+    console.log(`Register request `);
+    console.log(req.body)
 
-    // Truy vấn SQL để thêm người dùng mới vào bảng authen_user
-    const query = 'INSERT INTO authen_user (user_name, password) VALUES (?, ?)';
+    var max_loan = 0;
+    switch (req.body.role) {
+        case "học viên":
+            max_loan = 7
+            break;
+        case "sinh viên":
+            max_loan = 14
+            break;
+        case "giảng viên":
+            max_loan = 30
+            break;
+        case "tiến sĩ":
+            max_loan = 60
+            break;
+        case "giáo sư":
+            max_loan = 90
+            break;
+        default:
+            console.log("Unknown status code");
+    }
 
-    mysql.query(query, [req.body.user, req.body.password], (error, results) => {
-        if (error) {
-            console.error('Error inserting user: ', error);
-            return { success: false, message: 'Error while registering user.' };
+    mysql.query('select * from authen_user' ,(err,user_list)=>{
+        var duplicate_name = false
+        var duplicate_id = false
+        user_list.forEach((user, index) => {
+            // console.log(`user name ${user} and ${req.body.user} `);
+            if (user.user_name == req.body.user){
+                // console.log("user name exist in data base !")
+                duplicate_name = true
+                // return res.render("register", {loginMessage : "Your username has been used"});           
+            }
+            if (user.id_code == req.body.id){
+                // console.log("user name exist in data base !")
+                duplicate_id = true
+                // return res.render("register", {loginMessage : "Your username has been used"});           
+            }
+        });
+        if(duplicate_name == true){
+            console.log("user name exist in data base !")
+            return res.render("register", {set_alert : "Your username has been used, please user another user name!"});           
         }
-        return res.redirect("/home");
-        // return { success: true, message: 'User registered successfully.', userId: results.insertId };
+        else if(duplicate_id == true){
+            console.log("id register duplicate !!!")
+            return res.render("register", {set_alert : "Your id code has been use for this library system service!"});
+        }
+        else{
+            // Truy vấn SQL để thêm người dùng mới vào bảng authen_user
+            const query = 'INSERT INTO authen_user (user_name, password , permission , id_code, full_name, ban , max_loan) VALUES (?, ?, ?, ? , ? ,1, ?)';
+
+            mysql.query(query, [req.body.user, req.body.password, req.body.role, req.body.id, req.body.full_name, max_loan], (error, results) => {
+                if (error) {
+                    console.error('Error inserting user: ', error);
+                    return { success: false, message: 'Error while registering user.' };
+                }
+                return res.render("register", {set_alert : "Register account sucessfully!!!"});  
+                // return res.redirect("/home");
+                // return { success: true, message: 'User registered successfully.', userId: results.insertId };
+            });
+        }
     });
 }
 // MediaSourceHandle.export getLoginPage;

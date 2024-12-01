@@ -7,21 +7,36 @@
     <!-- Link to external CSS -->
     <!-- Link to multiple external CSS files -->
     <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
     <!-- Trong một file EJS -->
     <div class = "login-container" >
-        <h1>LOGIN Library system manager</h1><br><br><br><br><br><br><br><br>
+        <h1>REGISTER NEW ACCOUNT</h1>
         <!-- Hiển thị thông báo từ server ngay trên trường Username -->
-        <p style="color: rgba(34, 139, 236, 0.959); font-weight: bold;"><%= loginMessage %></p><br>
+        <p style="color: rgba(34, 139, 236, 0.959); font-weight: bold;">Please fill your user name and password</p><br>
         <form action="/register" method="POST">
-            <label for="username">Username:</label>
+            <label for="full_name">Your full name:</label>
+            <input type="text" id="full_name" name="full_name" required><br><br>
+
+            <label for="username">User name:</label>
             <input type="text" id="username" name="user" required><br><br>
             
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br><br>
+
+            <label for="id">Your ID number:</label>
+            <input type="text" id="id" name="id" required><br><br>
             
+            <label for="role" >Your role:</label>
+            <select id="role" name="role"  class="role-select">
+                <option value="sinh viên">Sinh viên</option>
+                <option value="giảng viên">Giảng viên</option>
+                <option value="giáo sư">Giáo sư</option>
+                <option value="tiến sĩ">Tiến sĩ</option>
+                <option value="học viên">Học viên</option>
+            </select><br><br>
+
             <button type="submit">Resgister</button>
             <!-- <a href="/create-account">
                 <button type="button" class="btn-create-account">Resgister new account</button>
@@ -29,6 +44,17 @@
         </form>
     </div>
     <!-- Footer Section -->
-
+    <script>
+        window.onload = function () {
+            // Kiểm tra nếu biến set_alert tồn tại
+            <% if (typeof set_alert !== 'undefined' && set_alert) { %>
+                // Hiển thị alert với nội dung từ biến set_alert
+                alert('<%= set_alert %>');
+                <% if (set_alert == "Register account sucessfully!!!") { %>
+                window.location.href = '/home';
+                <% } %>
+            <% } %>
+        }
+    </script>
 </body>
 </html>

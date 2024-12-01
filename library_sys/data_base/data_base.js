@@ -1,8 +1,9 @@
 // import mysql server to parse data from database
-const mysql = require('mysql')
+const sql = require('mysql');
+const { NULL } = require('mysql/lib/protocol/constants/types');
 
 // connect to localhost mysql server
-const sql = mysql.createConnection({
+const mysql = sql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'phuongtt1',
@@ -10,11 +11,15 @@ const sql = mysql.createConnection({
 });
 
 
-sql.connect((err) => {
+mysql.connect((err) => {
     if (err) throw err;
     console.log('Database mysql has been connected!');
 });
 
-module.exports = sql ;
+
+module.exports = {
+    mysql,
+    // topics,
+};
 
 /***************************************************************************/

@@ -27,3 +27,44 @@
     font-size: 1.2rem;
     margin-bottom: 20px;
 }
+
+/* Thêm kiểu cho phần search-form */
+.search-form {
+    display: flex; /* Sử dụng Flexbox để căn chỉnh các phần tử trong hàng */
+    margin-top: 20px; /* Khoảng cách giữa đoạn văn và form tìm kiếm */
+}
+
+/* Kiểu cho trường nhập liệu */
+.search-form input[type="text"] {
+    padding: 10px 15px; /* Padding cho trường nhập liệu */
+    border: 2px solid #007bff; /* Đường viền màu xanh */
+    border-radius: 25px 0 0 25px; /* Bo tròn các góc bên trái */
+    font-size: 16px; /* Kích thước font chữ */
+    width: 300px; /* Chiều rộng của trường nhập liệu */
+    transition: border-color 0.3s; /* Hiệu ứng chuyển đổi cho màu viền */
+}
+
+/* Hiệu ứng khi focus vào trường nhập liệu */
+.search-form input[type="text"]:focus {
+    outline: none; /* Ẩn viền mặc định */
+    border-color: #0056b3; /* Đổi màu viền khi focus */
+}
+
+/* Kiểu cho nút tìm kiếm */
+.search-form button {
+    padding: 10px 20px; /* Padding cho nút */
+    background-color: #007bff; /* Màu nền cho nút */
+    color: white; /* Màu chữ cho nút */
+    border: none; /* Ẩn đường viền */
+    border-radius: 0 25px 25px 0; /* Bo tròn các góc bên phải */
+    font-size: 16px; /* Kích thước font chữ */
+    cursor: pointer; /* Thay đổi con trỏ khi di chuột qua nút */
+    transition: background-color 0.3s, transform 0.3s; /* Hiệu ứng chuyển đổi cho màu nền và chuyển động */
+}
+
+/* Hiệu ứng khi di chuột qua nút */
+.search-form button:hover {
+    background-color: #0056b3; /* Đổi màu nền khi hover */
+    transform: scale(1.05); /* Tăng kích thước khi hover */
+}
+

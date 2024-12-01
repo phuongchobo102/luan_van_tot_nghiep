@@ -34,6 +34,7 @@ h1 {
     /* text-align: center; */
     transition: transform 0.3s; /* Hiệu ứng chuyển động khi hover */
     width: 35%;
+    /* hẹ */
 }
 label {
     font-weight: bold; /* Làm cho chữ đậm */
@@ -110,4 +111,37 @@ a {
 /* Căn chỉnh khoảng cách giữa các nút */
 .btn-create-account, button[type="submit"] {
     margin-bottom: 10px;
+}
+
+/* Style cho nhãn (label) của Role */
+.role-label {
+    font-weight: bold; /* Làm đậm chữ */
+    display: block; /* Hiển thị dưới dạng block để dễ căn chỉnh */
+    margin-bottom: 5px; /* Thêm khoảng cách dưới nhãn */
+    color: #4A90E2; /* Màu xanh dương */
+}
+
+/* Style cho danh sách chọn (select) của Role */
+.role-select {
+    width: 100%; /* Chiều rộng đầy đủ */
+    padding: 10px; /* Khoảng cách bên trong */
+    border: 1px solid #ccc; /* Đường viền */
+    border-radius: 5px; /* Bo tròn các góc */
+    background-color: #f9f9f9; /* Màu nền nhạt */
+    color: #333; /* Màu chữ */
+    font-size: 14px; /* Kích thước chữ */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển động */
+}
+
+select {
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #333; /* Màu chữ mặc định cho toàn bộ dropdown */
+}
+
+select option {
+    color: #007BFF; /* Màu xanh nước biển cho text của các tùy chọn */
+    background-color: #f8f9fa; /* Màu nền sáng cho tùy chọn */
+    font-weight: bold; /* Chữ đậm */
 }

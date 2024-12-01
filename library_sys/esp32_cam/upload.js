@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('../data_base/data_base')
+const {mysql , topics} = require('../data_base/data_base')
 const { exec } = require('child_process');// use for run python code
 const multer = require('multer');
 // const path = require('path');

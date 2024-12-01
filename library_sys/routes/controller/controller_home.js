@@ -1,4 +1,4 @@
-const mysql = require('../../data_base/data_base')
+const {mysql , topics} = require('../../data_base/data_base')
 const date = new Date();
 const { renderPage } = require('./render_page');
 
@@ -13,14 +13,16 @@ function getHomePage(req,res){
         // store row
         // Lọc các row có giá trị user = 'test'
         const user_name = req.session.username
-        const books = row.filter(row => row.issue == 0);
+        var books = row.filter(row => row.issue == 0);
         const ban = req.session.ban;
         const time_unlock = req.session.date_ban;
         const  admin = req.session.admin;
         // console.log( req.session.date_ban);
         // res.render('home', {user_name,books,ban,time_unlock, admin });
         // console.log(admin)
-        renderPage(res,'home',{user_name,books,ban,time_unlock, admin });
+        books = books.slice(0, 100);
+        var topics = global.topics
+        renderPage(res,'home',{user_name,books,ban,time_unlock, admin ,topics});
     })
     
     // res.redirect("/login");
@@ -66,6 +68,10 @@ function redirectHomePage(req,res){
 }
 
 function removeAccents(str) {
+    if (!str) {
+        // Nếu str là null, undefined, hoặc rỗng, trả về chuỗi rỗng
+        return "";
+    }
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
@@ -81,16 +87,19 @@ function search(req,res){
         // store row
         // Lọc các row có giá trị user = 'test'
         const user_name = req.session.username
-        const books = row.filter(user => 
-            removeAccents(user.book).toLowerCase().includes(removeAccents(searchQuery).toLowerCase()) ||
-            removeAccents(user.author).toLowerCase().includes(removeAccents(searchQuery).toLowerCase())
+        const books = row.filter(book => 
+            removeAccents(book.book).toLowerCase().includes(removeAccents(searchQuery.replace(/[.,]/g, '')).toLowerCase()) ||
+            removeAccents(book.author).toLowerCase().includes(removeAccents(searchQuery.replace(/[.,]/g, '')).toLowerCase())
         );
+        // books.forEach(book => {
+        //     console.log(`Book ${book.book} author : ${book.author}`);
+        // });
         const ban = req.session.ban;
         const time_unlock = req.session.date_ban;
         // const ban = req.session.ban;
         // const time_unlock = req.session.date_ban;
         const  admin = req.session.admin;
-        console.log(books)
+        // console.log(books)
         res.render('book', {user_name,books,ban,time_unlock,admin});
     })
     // Xử lý hoặc sử dụng searchQuery để tìm kiếm sách
