@@ -1,0 +1,103 @@
+<main class="book-table-container">
+    <h2>Bảng thống kê sách trong hệ thống</h2>
+    <table class="book-table" id="book-table">
+        <thead>
+            <tr>
+                <th>Tên Sách</th>
+                <th>Tác Giả</th>
+                <th>Ngày Thêm</th>
+                <th>Lượt Mượn</th>
+            </tr>
+        </thead>
+        <tbody id="book-tbody">
+            <% books.forEach(book => { %>
+                <tr>
+                    <td><%= book.book %></td>
+                    <td><%= book.author %></td>
+                    <td><%= new Date(book.create_on_date).toLocaleDateString('vi-VN') %></td>
+                    <td><%= book.times_borrow %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <% if (typeof alertt !== 'undefined' && alertt) { %>
+        <script>
+          window.onload = function() {
+            alertt = false;
+            alert("Chúc mừng bạn đã thao tác xóa sách thành công trên hệ thống!!!")
+          }
+        </script>
+    <% } %>
+    <a href="/manage" class="back-link">Quay lại Trang Quản Trị</a>
+</main>
+
+<style>
+/* CSS cho khối main */
+.book-table-container {
+    margin-left: 15%; /* căn lề trái hoàn toàn */
+    text-align: left; /* Căn lề trái cho nội dung bên trong */
+    width: 80%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-table-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* CSS cho bảng */
+.book-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.book-table th, .book-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.book-table th {
+    background-color: #0073e6;
+    color: #fff;
+}
+
+.book-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.book-table tr:hover {
+    background-color: #e0f7fa;
+}
+
+.delete-button {
+    padding: 6px 12px;
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #ff1a1a;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #0073e6;
+    font-weight: bold;
+    text-align: center;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+</style>

@@ -1,0 +1,147 @@
+<main class="book-table-container">
+    <h2>Danh sách sách hiện có</h2>
+    <table class="book-table" id="book-table">
+        <thead>
+            <tr>
+                <th>Tên Sách</th>
+                <th>Tác Giả</th>
+                <th>Ngày Thêm</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody id="book-tbody">
+            <% books.forEach(book => { %>
+                <tr>
+                    <td><%= book.book %></td>
+                    <td><%= book.author %></td>
+                    <td><%= new Date(book.create_on_date).toLocaleDateString('vi-VN') %></td>
+                    <td>
+                        <form action="/manage/delete-book" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sách này không?');">
+                            <input type="hidden" name="book" value="<%= book.book %>">
+                            <button type="submit" class="delete-button" >Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <% if (typeof alertt !== 'undefined' && alertt) { %>
+        <script>
+          window.onload = function() {
+            alertt = false;
+            alert("Chúc mừng bạn đã thao tác xóa sách thành công trên hệ thống!!!")
+          }
+        </script>
+    <% } %>
+    <a href="/manage" class="back-link">Quay lại Trang Quản Trị</a>
+</main>
+<script>
+// Chuyển dữ liệu sách từ server vào biến books
+const books = <%- JSON.stringify(books) %>; // Biến books chứa tất cả sách từ server
+
+// Hàm lọc sách
+function filterBooks() {
+    const searchQuery = document.getElementById('search-input').value.toLowerCase();
+    const filteredBooks = books.filter(book => 
+        removeAccents(book.book).toLowerCase().includes(removeAccents(searchQuery).toLowerCase()) ||
+        removeAccents(book.author).toLowerCase().includes(removeAccents(searchQuery).toLowerCase())
+    );
+
+    // Lấy bảng tbody
+    const bookTableBody = document.getElementById('book-tbody');
+    bookTableBody.innerHTML = ''; // Xóa nội dung hiện tại của bảng
+
+    // Thêm các sách đã lọc vào bảng
+    filteredBooks.forEach(book => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${book.book}</td>
+            <td>${book.author}</td>
+            <td>${book.create_on_date}</td>
+            <td>
+                <form action="/manage/delete-book" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sách này không?');">
+                    <input type="hidden" name="book" value="${book.book}">
+                    <button type="submit" class="delete-button">Xóa</button>
+                </form>
+            </td>
+        `;
+        bookTableBody.appendChild(row); // Thêm dòng mới vào bảng
+    });
+}
+function removeAccents(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}   
+
+
+</script>
+
+<style>
+/* CSS cho khối main */
+.book-table-container {
+    margin-left: 15%; /* căn lề trái hoàn toàn */
+    text-align: left; /* Căn lề trái cho nội dung bên trong */
+    width: 80%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-table-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* CSS cho bảng */
+.book-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.book-table th, .book-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.book-table th {
+    background-color: #0073e6;
+    color: #fff;
+}
+
+.book-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.book-table tr:hover {
+    background-color: #e0f7fa;
+}
+
+.delete-button {
+    padding: 6px 12px;
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #ff1a1a;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #0073e6;
+    font-weight: bold;
+    text-align: center;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+</style>

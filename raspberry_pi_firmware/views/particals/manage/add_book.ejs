@@ -1,0 +1,43 @@
+<main>
+    <h2>Thêm Sách Mới</h2>
+    <% if (typeof add_sucess !== 'undefined') { %>
+        <p class="add_book" >Chúc mừng, bạn đã thêm sách thành công vào hệ thống</p>
+    <% } else { %>
+        <!-- <p>Biến permission không tồn tại.</p> -->
+    <% } %>
+    <form action="/manage/add-book" method="POST">
+        <label for="title">Tên Sách:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="author">Tác Giả:</label>
+        <input type="text" id="author" name="author" required>
+
+        <label for="publicationDate">Ngày Xuất Bản:</label>
+        <input type="date" id="publicationDate" name="publicationDate" required>
+
+        <label for="topic">Trạng Thái:</label>
+        <select id="topic" name="topic">
+            <option value="Sách giáo trình">Sách giáo trình</option>
+            <option value="Sách tham khảo">Sách tham khảo</option>
+            <option value="Tiểu thuyết">Tiểu thuyết</option>
+            <option value="Truyện">Truyện</option>
+            <option value="Khác">Khác</option>
+        </select>
+        <button type="submit">Thêm Sách</button>
+    </form>
+    <a href="/manage" class="back-link">Quay lại Trang Quản Trị</a>
+</main>
+<style>
+.add_book p {
+    color: #2e8b57; /* Màu xanh lá cây đậm */
+    font-weight: bold; /* In đậm */
+    font-family: Arial, sans-serif; /* Phông chữ dễ đọc */
+    font-size: 1.2rem; /* Tăng kích thước chữ */
+    padding: 10px;
+    border: 1px solid #2e8b57;
+    background-color: #e6f4ea; /* Nền xanh lá cây nhạt */
+    border-radius: 5px; /* Bo góc */
+    text-align: center; /* Căn giữa */
+}
+
+</style>

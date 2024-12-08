@@ -1,0 +1,14 @@
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="brand">Library System</a>
+        <ul class="nav-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/books">Books</a></li>
+            <% if (typeof admin !== 'undefined') { %>
+                <li><a href="/manage">Manage</a></li>
+            <% } %>
+            <li><a href="/home/account">Account</a></li>
+            <li><a href="/login">Login</a></li>
+        </ul>
+    </div>
+</nav>

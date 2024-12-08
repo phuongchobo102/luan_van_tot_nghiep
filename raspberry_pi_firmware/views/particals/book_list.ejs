@@ -1,0 +1,44 @@
+<!-- Book List Section -->
+<section class="book-list">
+    <div class="container">
+        <% if (ban === 2) { %>
+            <h2>Tài khoản hiện tại của bạn đã bị khóa trong vòng <%= time_unlock %> ngày!!!</h2>
+        <% } else if ( ban === 1){ %> 
+            <h2>Popular Books List</h2>
+            <div class="book-grid">
+                <% books.forEach(book => { %>
+                    <div class="book-card">
+                        <img src="<%= book.image %>" alt="<%= book.title %>" class="book-cover">
+                        <h3><%= book.book %></h3>
+                        <p>by <%= book.author %></p>
+                        
+                        <!-- Form POST để mượn sách -->
+                        <form action="/home" method="POST">
+                            <input type="hidden" name="book_id" value="<%= book.item_id %>">
+                            <input type="hidden" name="book_name" value="<%= book.book %>">
+                            <button type="submit" class="btn" onclick="confirmBorrow()" >Mượn</button>
+                        </form>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <h2>Popular Books List</h2>
+            <div class="book-grid">
+                <% books.forEach(book => { %>
+                    <div class="book-card">
+                        <img src="<%= book.image %>" alt="<%= book.title %>" class="book-cover">
+                        <h3><%= book.book %></h3>
+                        <p>by <%= book.author %></p>
+                        
+                        <!-- Form POST để mượn sách -->
+                        <form action="/home" method="POST">
+                            <input type="hidden" name="book_id" value="<%= book.item_id %>">
+                            <input type="hidden" name="book_name" value="<%= book.book %>">
+                            <button type="submit" class="btn" onclick="confirmBorrow()" >Mượn</button>
+                        </form>
+                    </div>
+                <% }); %>
+            </div>
+        <% }  %>
+    </div>
+</section>

@@ -1,0 +1,3 @@
+#!/bin/bash 
+echo "Init virtual environment for python3"
+source ~/python/venv/bin/activate

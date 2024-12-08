@@ -1,0 +1,86 @@
+/* Đặt màu nền và căn giữa nội dung */
+main {
+    background-color: #f0f8ff; /* Màu xanh nhạt */
+    padding: 2rem;
+    width: 50%;
+    /* max-width: 600px; */
+    margin: 2rem auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Tiêu đề */
+main h2 {
+    color: #004080; /* Màu xanh dương đậm */
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Nhãn cho từng trường */
+main label {
+    display: block;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 0.5rem;
+}
+
+/* Ô nhập liệu */
+main input[type="text"],
+main input[type="date"],
+main select {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #004080;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #004080;
+    background-color: #ffffff;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hiệu ứng hover cho ô nhập liệu */
+main input[type="text"]:hover,
+main input[type="date"]:hover,
+main select:hover {
+    border-color: #0066cc;
+    box-shadow: 0 0 5px rgba(0, 102, 204, 0.3);
+}
+
+/* Hiệu ứng khi chọn ô nhập liệu */
+main input[type="text"]:focus,
+main input[type="date"]:focus,
+main select:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 8px rgba(0, 102, 204, 0.5);
+}
+
+/* Nút thêm sách */
+main button[type="submit"] {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #004080;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hiệu ứng hover cho nút */
+main button[type="submit"]:hover {
+    background-color: #0059b3;
+    transform: scale(1.02);
+}
+
+/* Hiệu ứng khi nhấn vào nút */
+main button[type="submit"]:active {
+    background-color: #003366;
+    transform: scale(0.98);
+}
+

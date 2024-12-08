@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Borrow/Return System</title>
+    
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="/css/account.css">
+
+    <!-- Google Fonts (Optional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <%- include('particals/header') %>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome back <%= username %>!</h1>
+            <p>Borrow and return books easily with our system</p>
+        </div>
+    </section>
+
+    <!-- Nội dung chính -->
+    <section class="book-list">
+        <div class="container">
+            <h2>Your Borrowed Books</h2>
+            <% if (books.length === 0) { %>
+                <p>You have no borrowed books at the moment.</p>
+            <% } else { %>
+                <div class="book-grid">
+                    <% books.forEach(function(book) { %>
+                        <div class="book-card">
+                            <img src="<%= book.image %>" alt="<%= book.title %>" class="book-cover">
+                            <h3><%= book.book %></h3>
+                            <p>By <strong><%= book.author %></strong></p>
+                            <p><strong>Borrowed Date:</strong> <%= new Date(book.date_borrow).toISOString().split('T')[0] %></p>
+                            <form action="/home/account" method="POST">
+                                <input type="hidden" name="item_id" value="<%= book.item_id %>">
+                                <input type="hidden" name="date_borrow" value="<%= new Date(book.date_borrow).toISOString().split('T')[0] %>">
+                                <button type="submit" class="return-button" onclick="confirmBorrow()" >Trả sách</button>
+                            </form>
+                        </div>
+            <% }); %>
+        </div>
+        <% } %>
+    </section>
+
+
+    <!-- Footer Section -->
+    <%- include('particals/footer') %>
+
+</body>
+<script>
+    // Hàm sẽ chạy khi người dùng nhấn nút
+    function confirmBorrow() {
+        alert("Congratulation, you have been return book sucess!!!");
+        // Bạn có thể thêm các thao tác khác tại đây
+    }
+</script>
+</html>

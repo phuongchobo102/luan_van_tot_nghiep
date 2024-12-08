@@ -1,0 +1,20 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Đảm bảo body chiếm toàn bộ chiều cao cửa sổ */
+    margin: 0; /* Xóa margin mặc định */
+}
+
+/* Footer */
+footer {
+    background-color: #004d99;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 0;
+    position: relative; /* Có thể thay đổi thành fixed hoặc sticky nếu cần */
+    width: 100%;
+    margin-top: auto; /* Đẩy footer xuống dưới cùng */
+}
