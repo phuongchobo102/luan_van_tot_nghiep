@@ -1,0 +1,148 @@
+body {
+    background-image: url('/images/login.jpg');  /* Đường dẫn tới hình ảnh */
+    background-size: cover;    /* Hình nền bao phủ toàn bộ màn hình */
+    background-position: center; /* Đặt hình ảnh ở giữa */
+    background-repeat: no-repeat; /* Không lặp lại hình nền */
+    height: 100vh;              /* Chiều cao toàn bộ màn hình */
+    margin: 0;                  /* Xóa khoảng trắng mặc định của body */
+    display: flex;
+    justify-content: center;    /* Căn giữa theo chiều ngang */
+    align-items: center;
+}
+
+h1 {
+    font-family: 'Arial', sans-serif; /* Font chữ */
+    font-size: 2.5em; /* Kích thước chữ */
+    text-align: center; /* Căn giữa chữ */
+    color: #4A90E2; /* Màu chữ */
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+    text-transform: uppercase; /* Chữ in hoa */
+    letter-spacing: 1px; /* Khoảng cách giữa các chữ cái */
+    border-bottom: 2px solid #4A90E2; /* Đường viền dưới */
+    padding-bottom: 10px; /* Đệm dưới cùng */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng cho tiêu đề */
+}
+
+.login-container {
+    /* display: flex;      */
+    background-color: #ffffff; /* Màu nền trắng */
+    border: 1px solid #e0e0e0; /* Đường viền nhẹ xung quanh */
+    border-radius: 8px; /* Bo tròn các góc */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho login-container */
+    padding: 20px; /* Khoảng cách bên trong login-container */
+    margin: 15px; /* Khoảng cách bên ngoài login-container */
+    /* text-align: center; */
+    transition: transform 0.3s; /* Hiệu ứng chuyển động khi hover */
+    width: 35%;
+    /* hẹ */
+}
+label {
+    font-weight: bold; /* Làm cho chữ đậm */
+    margin-right: 10px; /* Thêm khoảng cách bên phải cho label */
+    color: #218838;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%; /* Chiều rộng đầy đủ */
+    padding: 10px; /* Đệm cho input */
+    border: 1px solid #ccc; /* Đường viền */
+    border-radius: 5px; /* Bo tròn các góc */
+    box-sizing: border-box; /* Tính toán chiều rộng và chiều cao */
+}
+
+.login-container button[type="submit"] {
+    width: 100%; /* Chiều rộng đầy đủ */
+    padding: 10px; /* Đệm cho nút */
+    background-color: #4A90E2; /* Màu nền nút */
+    color: #fff; /* Màu chữ nút */
+    border: none; /* Không có đường viền */
+    border-radius: 5px; /* Bo tròn các góc */
+    cursor: pointer; /* Con trỏ khi di chuột qua */
+    font-size: 16px; /* Kích thước chữ */
+    margin-top: 10px; /* Khoảng cách phía trên nút */
+}
+
+.login-container button[type="submit"]:hover {
+    background-color: #218838; /* Màu khi di chuột qua */
+}
+
+
+
+/* Hiệu ứng khi hover */
+.login-container:hover {
+    transform: translateY(-5px); /* Nâng login-container lên khi hover */
+}
+
+/* Tạo kiểu cho tiêu đề */
+.login-container h2 {
+    font-size: 1.5em; /* Kích thước chữ tiêu đề */
+    color: #333; /* Màu chữ tiêu đề */
+    margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
+}
+
+/* Tạo kiểu cho đoạn văn bản */
+.login-container p {
+    font-size: 1em; /* Kích thước chữ đoạn văn */
+    color: #666; /* Màu chữ cho đoạn văn */
+    line-height: 1.5; /* Chiều cao dòng cho dễ đọc */
+}
+
+.btn-create-account {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    display: block;
+}
+
+a {
+    text-decoration: none; /* Xóa bỏ dấu gạch dưới của các liên kết */
+}
+
+.btn-create-account:hover {
+    background-color: #45a049;
+}
+
+/* Căn chỉnh khoảng cách giữa các nút */
+.btn-create-account, button[type="submit"] {
+    margin-bottom: 10px;
+}
+
+/* Style cho nhãn (label) của Role */
+.role-label {
+    font-weight: bold; /* Làm đậm chữ */
+    display: block; /* Hiển thị dưới dạng block để dễ căn chỉnh */
+    margin-bottom: 5px; /* Thêm khoảng cách dưới nhãn */
+    color: #4A90E2; /* Màu xanh dương */
+}
+
+/* Style cho danh sách chọn (select) của Role */
+.role-select {
+    width: 100%; /* Chiều rộng đầy đủ */
+    padding: 10px; /* Khoảng cách bên trong */
+    border: 1px solid #ccc; /* Đường viền */
+    border-radius: 5px; /* Bo tròn các góc */
+    background-color: #f9f9f9; /* Màu nền nhạt */
+    color: #333; /* Màu chữ */
+    font-size: 14px; /* Kích thước chữ */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển động */
+}
+
+select {
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #550707; /* Màu chữ mặc định cho toàn bộ dropdown */
+}
+
+select option {
+    color: #007BFF; /* Màu xanh nước biển cho text của các tùy chọn */
+    background-color: #f8f9fa; /* Màu nền sáng cho tùy chọn */
+    font-weight: bold; /* Chữ đậm */
+}

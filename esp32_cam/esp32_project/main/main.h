@@ -19,6 +19,9 @@
 #include "i2c_intf.h"
 #include "LCD_16x2.h"
 
+#include "esp_wifi.h"
+#include "esp_event.h"
+
 static const char *TAG = "esp32-cam Webserver";
 
 

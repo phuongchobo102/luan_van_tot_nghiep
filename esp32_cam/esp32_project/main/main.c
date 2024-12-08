@@ -76,6 +76,8 @@ void send_image(){
     camera_fb_t *pic = esp_camera_fb_get(); // Chụp ảnh và lưu ảnh vào `pic`
     esp_camera_fb_return(pic); 
     pic = esp_camera_fb_get(); 
+    esp_camera_fb_return(pic); 
+    pic = esp_camera_fb_get(); 
     // 2. Thiết lập yêu cầu HTTP
     esp_http_client_config_t config = {
         .url = SER_POST_URL,
@@ -197,6 +199,8 @@ static esp_err_t init_camera(void)
         .pixel_format = PIXFORMAT_JPEG,
         // .pixel_format = PIXFORMAT_GRAYSCALE,
         .frame_size = FRAMESIZE_UXGA,
+        // .frame_size = FRAMESIZE_FHD,
+
 
         .jpeg_quality = 10,
         .fb_count = 1,
