@@ -1,0 +1,32 @@
+# Graduation Project Repository
+
+This repository contains all source code and documentation for my university graduation project. The project is a comprehensive library management system, including:
+
+- **Web Server Software**: Built with Node.js, providing a user interface and API for library operations.
+- **Raspberry Pi Firmware**: Controls hardware devices and communicates with the web server.
+- **ESP32 Firmware**: Manages sensors and peripherals, enabling IoT features for the library system.
+
+## Structure
+
+- `/web-server/` - Node.js web server source code
+- `/raspberry-pi/` - Raspberry Pi firmware and scripts
+- `/esp32/` - ESP32 firmware source code
+
+## Features
+
+- Book management (add, update, delete, search)
+- User authentication and authorization
+- Real-time device communication
+- IoT integration for library automation
+
+## Getting Started
+
+1. Clone the repository:
+    ```
+    git clone <repo-url>
+    ```
+2. Follow setup instructions in each subfolder's README.
+
+## License
+
+This project is for educational purposes.
